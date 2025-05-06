@@ -1,5 +1,9 @@
 package game.object;
 
 public class Position {
-	public int Row, Col;
+	public int row, col;
+	public Position(int row, int col){
+		this.row = row;
+		this.col = col;
+	}
 }
