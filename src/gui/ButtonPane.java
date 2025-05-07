@@ -1,5 +1,6 @@
 package gui;
 
+import gui.scene.MainMenuState;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
@@ -11,16 +12,16 @@ import javafx.scene.layout.VBox;
 import javafx.scene.media.AudioClip;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import utilities.AudioManager;
 
-public class MenuPane extends VBox{
-	private static MenuPane instance;
-	private Canvas gameLogo;
+public class ButtonPane extends VBox{
+	private static ButtonPane instance;
 	private Button playButton;
 	private Button settingButton;
 	private Button exitButton;
-
+	private Canvas gameLogo;
 	
-	private MenuPane() {
+	private ButtonPane() {
 		super();
 		this.setPrefWidth(200);
 		this.setPrefHeight(300);
@@ -29,11 +30,10 @@ public class MenuPane extends VBox{
 		this.setPadding(new Insets(45,0,0,0));
 		
 		// Create each node by calling their method
-		initializeGameLogoImage();
 		initializePlayButton();
 		initializeSettingButton();
 		initializeExitButton();
-		
+		initializeGameLogoImage();
 		
 		this.getChildren().addAll(gameLogo,playButton,settingButton,exitButton);
 	}
@@ -67,8 +67,7 @@ public class MenuPane extends VBox{
 		});
 		
 		btn.setOnMouseClicked(e -> {
-			AudioClip clickEffect = new AudioClip(ClassLoader.getSystemResource("Audio/ClickEffect.mp3").toString());
-			clickEffect.play();
+			AudioManager.playEffect("Audio/ClickEffect.mp3");
 		});
 
 		this.playButton = btn; //c49152
@@ -97,7 +96,10 @@ public class MenuPane extends VBox{
 		});
 		
 		btn.setOnMouseClicked(e -> {
-//			this.clickEffect.play();
+			AudioManager.playEffect("Audio/ClickEffect.mp3");
+			
+			MainMenuState.getInstance().getChildren().clear();
+			MainMenuState.getInstance().getChildren().addAll(MainMenuState.getBackgroundCanvas(),SettingPane.getInstance());
 		});
 		
 		this.settingButton = btn;
@@ -125,16 +127,16 @@ public class MenuPane extends VBox{
 		});
 		
 		btn.setOnMouseClicked(e -> {
-//			this.clickEffect.play();
+			AudioManager.playEffect("Audio/ClickEffect.mp3");
 		});
 		
 		this.exitButton = btn;
 	}
 	
 	
-	public static MenuPane getInstance() {
+	public static ButtonPane getInstance() {
 		if (instance == null) {
-			instance = new MenuPane();
+			instance = new ButtonPane();
 		}
 		return instance;
 	}
