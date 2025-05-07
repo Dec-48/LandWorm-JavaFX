@@ -20,11 +20,7 @@ public class Player extends GameObject{
 	}
 	
 	public void move() {
-		int row = this.getPosition().row;
-		int col = this.getPosition().col;
-		if (direction == "D") {
-			this.setPosition(new Position(row + 1, col));
-		}
+		//TODO : implement later on
 	}
 	
 	public int getSpeed() {
