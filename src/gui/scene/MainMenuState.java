@@ -1,5 +1,6 @@
 package gui.scene;
 
+import Manager.AudioManager;
 import gui.ButtonPane;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -10,7 +11,6 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import utilities.AudioManager;
 
 public class MainMenuState extends StackPane {
 	private static MainMenuState instance;
@@ -23,8 +23,8 @@ public class MainMenuState extends StackPane {
 		this.setPrefHeight(600);
 		
 		BACKGROUND = new Canvas(1000,600);
-		Image backgroundImage = new Image(ClassLoader.getSystemResource("Image/MainMenuBackground1.PNG").toString());
-		Image secondBackgroundImage = new Image(ClassLoader.getSystemResource("Image/MainMenuBackground2.PNG").toString());
+		Image backgroundImage = new Image(ClassLoader.getSystemResource("Image/MainMenuBackground1.png").toString());
+		Image secondBackgroundImage = new Image(ClassLoader.getSystemResource("Image/MainMenuBackground2.png").toString());
 		BACKGROUND.getGraphicsContext2D().drawImage(backgroundImage,0,0,1000,600);
 		
 		BUTTONPANE = ButtonPane.getInstance();

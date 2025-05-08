@@ -1,21 +1,22 @@
-package utilities;
+package Manager;
 
 import gui.scene.MainMenuState;
 import javafx.scene.media.AudioClip;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 
 public class AudioManager {
 	private static AudioManager instance;
 	private static double BGMVOLUME = 0.2 ; 
-	private static double EFFECTVOLUME = 0.8;
-	private static AudioClip effect;
-	private static AudioClip bgm;
-
+	private static double EFFECTVOLUME = 2;
+	private static MediaPlayer effect;
+	private static MediaPlayer bgm;
 	
 	private AudioManager() {
 	}
 	
 	public static void setBGMVolume(double volume) {
-		BGMVOLUME = volume;
+        AudioManager.bgm.setVolume(volume);
 	}
 	
 	public static void setEffectVolume(double volume) {
@@ -23,13 +24,13 @@ public class AudioManager {
 	}
 	
 	public static void playEffect(String effectPath) {
-		effect = new AudioClip(ClassLoader.getSystemResource(effectPath).toString());
+		effect = new MediaPlayer(new Media(ClassLoader.getSystemResource(effectPath).toString()));
 		effect.setVolume(EFFECTVOLUME);
 		effect.play();
 	}
 	
 	public static void playBGM(String backgroudMusicPath) {
-		bgm = new AudioClip(ClassLoader.getSystemResource(backgroudMusicPath).toString());
+		bgm = new MediaPlayer(new Media(ClassLoader.getSystemResource(backgroudMusicPath).toString()));
 		bgm.setVolume(BGMVOLUME);
 		bgm.setCycleCount(AudioClip.INDEFINITE);
 		bgm.play();
@@ -47,4 +48,5 @@ public class AudioManager {
 		}
 		return instance;
 	}
+	
 }

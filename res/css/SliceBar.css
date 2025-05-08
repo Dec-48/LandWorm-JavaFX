@@ -1,0 +1,19 @@
+.custom-slider .track {
+    -fx-background-image: url("../Image/Bar.png"); 
+    -fx-background-size: stretch;
+    -fx-background-repeat: no-repeat;
+    -fx-pref-height: 120px; 
+	-fx-background-color: transparent;
+}
+
+.custom-slider .thumb {
+    -fx-background-image: url("../Image/Thumb.png"); 
+    -fx-background-size: cover;
+    -fx-pref-height: 45px;
+    -fx-pref-width: 45px; 
+	-fx-background-color: transparent;
+}
+
+.custom-slider {
+    -fx-control-inner-background: transparent; 
+}
