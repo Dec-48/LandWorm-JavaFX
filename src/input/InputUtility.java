@@ -23,5 +23,4 @@ public class InputUtility {
 		System.out.println(keyPressed);
 	}
 	
-	
 }

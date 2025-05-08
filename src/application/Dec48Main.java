@@ -22,8 +22,11 @@ public class Dec48Main extends Application{
 		primaryStage.setTitle("LandWorm");
 
 		GameCanvas gameCanvas = new GameCanvas(1000, 580); 
+		gameCanvas.addListerner();
 	
 		root.getChildren().add(gameCanvas);
+		gameCanvas.requestFocus(); 
+		
 		GameController gameController = new GameController();
 		gameController.initialGame();
 		GridBox[][] grid = gameController.getGrid();
@@ -47,14 +50,11 @@ public class Dec48Main extends Application{
 		AnimationTimer animation = new AnimationTimer() {
 			@Override
 			public void handle(long now) {
-//				for (int  = 0;  < 29; ++) {
-//					for (int j = 0;  < 50; ++) {
-//						grid[i][j].draw(gc); ไม่ต้องใช้อันนี้ก็ได้ เขียนเองสดๆไปก่อน
 						// render please mr.film 
 						// render grid first
 						// and then render playerA, playerB
 						
-				//Message from Film"Okay,since in the video playlist has sorted object holder and we dont so I've made a temporary holder name "RenderableHolder" that have only girdbox and 2 players in package sharedObject (new!)
+		//Message from Film"Okay,since in the video playlist has sorted object holder and we dont so I've made a temporary holder name "RenderableHolder" that have only girdbox and 2 players in package sharedObject (new!)
 				gameCanvas.paintComponent(); //This method paint everything in RenderableHolder to canvas
 //					}
 //				}

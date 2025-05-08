@@ -24,6 +24,7 @@ public class GameCanvas extends Canvas{
 	public void addListerner() {
 		this.setOnKeyPressed((KeyEvent event) -> {
 			InputUtility.setKeyPressed(event.getCode(), true);
+			System.out.println("press found!");
 		});
 
 		this.setOnKeyReleased((KeyEvent event) -> {
