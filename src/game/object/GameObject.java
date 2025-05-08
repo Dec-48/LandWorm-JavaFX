@@ -1,6 +1,6 @@
 package game.object;
 
-import game.object.interfaces.IRenderable;
+import sharedObject.IRenderable;
 
 public abstract class GameObject implements IRenderable{
 	protected Position position;
