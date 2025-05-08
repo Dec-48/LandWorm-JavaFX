@@ -1,9 +1,14 @@
 package gui;
 
+import Manager.AudioManager;
+import gui.scene.MainMenuState;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -13,59 +18,130 @@ import javafx.scene.text.Font;
 public class SettingPane extends StackPane{
 	private static SettingPane instance;
 	private Canvas leafBackground;
-	private Canvas settingImageCanvas;
-	private VBox elementPane;
+	private Canvas settingImageCanvas; 
 	private HBox bgmSettingPane;
+	private HBox effectSettingPane;
+	private VBox elementPane;
+	private Button backButton;
 	
 	private SettingPane() {
 		super();
 		this.setPrefWidth(800);
 		this.setPrefHeight(600);
 		this.setAlignment(Pos.TOP_CENTER);
-		this.setPadding(new Insets(120,0,0,0));
+		this.setPadding(new Insets(110,0,0,0));
 		
 		initializeLeafBackground();
 		initializeSettingImage();
+		this.getStylesheets().add(ClassLoader.getSystemResource("css/SliceBar.css").toString());
 		initializeBGMSettingPane();
-		
+		initializeEffectSettingPane();
+		initializeBackButton();
 		initializeElementPane();
 		
 		this.getChildren().addAll(leafBackground,elementPane);
 	}
 	
 	private void initializeLeafBackground() {
-		Canvas firstCanvas = new Canvas(600 , 600);
+		Canvas LeafCanvas = new Canvas(600 , 600);
 		Image backgroundLeafImage = new Image(ClassLoader.getSystemResource("Image/SettingBackground.PNG").toString());
-		firstCanvas.getGraphicsContext2D().drawImage(backgroundLeafImage,50,0,500,500);
-		leafBackground = firstCanvas;
+		LeafCanvas.getGraphicsContext2D().drawImage(backgroundLeafImage,50,0,500,500);
+		leafBackground = LeafCanvas;
 	}
 	 
 	private void initializeSettingImage() {
-		Canvas secondCanvas = new Canvas(200,100);
-		Image settingImage = new Image(ClassLoader.getSystemResourceAsStream("Image/SETTINGImage.PNG"));
-		secondCanvas.getGraphicsContext2D().drawImage(settingImage,20,0,200,110);
-		settingImageCanvas = secondCanvas;
+		Canvas settingCanvas = new Canvas(200,100);
+		Image settingImage = new Image(ClassLoader.getSystemResourceAsStream("Image/SETTINGImage.png"));
+		settingCanvas.getGraphicsContext2D().drawImage(settingImage,20,0,200,110);
+		settingImageCanvas = settingCanvas;
 	}
 	
 	private void initializeBGMSettingPane() {
 		bgmSettingPane = new HBox();
 		bgmSettingPane.setAlignment(Pos.CENTER);
-		Label bgmLabel = new Label("BGM");
-//		Font pixelFont = Font.loadFont(ClassLoader.getSystemResourceAsStream("Font/PressStart2P-Regular.ttf").toString(), 24);
-//		bgmLabel.setFont(pixelFont);
-		bgmLabel.setStyle("-fx-text-fill: #8b4513;");
+		bgmSettingPane.setSpacing(50);
 		
+		Canvas bgmSign = new Canvas(149,108);
+		Image bgmImage = new Image(ClassLoader.getSystemResource("Image/BGMImage.png").toString());
+		bgmSign.getGraphicsContext2D().drawImage(bgmImage,0,0,149,108);
 		
+		Slider bgmSlider = new Slider(0, 1, 0.2); 
+        bgmSlider.setPrefWidth(150);
+        bgmSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            AudioManager.setBGMVolume(newVal.doubleValue());
+
+        });
+        
+        bgmSlider.getStyleClass().add("custom-slider");
 		
-		bgmSettingPane.getChildren().addAll(bgmLabel);
+		bgmSettingPane.getChildren().addAll(bgmSign,bgmSlider);
+	}
+	
+	private void initializeEffectSettingPane() {
+		effectSettingPane = new HBox();
+		effectSettingPane.setAlignment(Pos.CENTER);
+		effectSettingPane.setSpacing(50);
+		
+		Canvas effectSign = new Canvas(170,130);
+		Image effectImage = new Image(ClassLoader.getSystemResource("Image/EffectImage.png").toString());
+		effectSign.getGraphicsContext2D().drawImage(effectImage,0,0,170,130);
+		
+		Slider effectSlider = new Slider(0, 2, 0.8); 
+        effectSlider.setPrefWidth(150);
+        effectSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            AudioManager.setEffectVolume(newVal.doubleValue());
+        });
+        
+        effectSlider.getStyleClass().add("custom-slider");
+        
+		effectSettingPane.getChildren().addAll(effectSign,effectSlider);
+	}
+	
+	private void initializeBackButton() {
+		Button btn = new Button();
+		Canvas buttonDisplayImage = new Canvas(80,80);
+		Image buttonImage = new Image(ClassLoader.getSystemResource("Image/BACKbutton.png").toString());
+		buttonDisplayImage.getGraphicsContext2D().drawImage(buttonImage, 5,5,70,70);
+		btn.setGraphic(buttonDisplayImage);
+		btn.setStyle("-fx-background-color: transparent; -fx-padding: 0;");
+		
+		btn.setOnMouseEntered(e -> {
+			btn.setCursor(Cursor.HAND);
+			buttonDisplayImage.getGraphicsContext2D().drawImage(buttonImage,0,0,80,80);
+			btn.setGraphic(buttonDisplayImage);
+		});
+		
+		btn.setOnMouseExited(e -> {
+			btn.setCursor(Cursor.DEFAULT);
+			buttonDisplayImage.getGraphicsContext2D().clearRect(0, 0, buttonDisplayImage.getWidth(), buttonDisplayImage.getHeight());
+			buttonDisplayImage.getGraphicsContext2D().drawImage(buttonImage,5,5,70,70);
+			btn.setGraphic(buttonDisplayImage);
+		});
+		
+		btn.setOnMouseClicked(e -> {
+			AudioManager.playEffect("Audio/ClickEffect.mp3");
+			
+			MainMenuState.getInstance().getChildren().clear();
+			MainMenuState.getInstance().getChildren().addAll(MainMenuState.getBackgroundCanvas(),ButtonPane.getInstance());
+		});
+		
+		this.backButton = btn;
 	}
 	
 	private void initializeElementPane() {
 		elementPane = new VBox();
 		elementPane.setAlignment(Pos.TOP_CENTER);
-		elementPane.getChildren().addAll(settingImageCanvas,bgmSettingPane);
+		elementPane.setSpacing(1);
+		
+		HBox backButtonContainer = new HBox();
+        backButtonContainer.setAlignment(Pos.CENTER_LEFT); 
+        backButtonContainer.getChildren().add(backButton);
+        backButtonContainer.setPadding(new Insets(0,0,0,270));
+			
+		elementPane.getChildren().addAll(settingImageCanvas,bgmSettingPane,effectSettingPane,backButtonContainer);
 		
 	}
+	
 	
 	public static SettingPane getInstance() {
 		if (instance == null) {

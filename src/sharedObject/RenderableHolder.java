@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import utilities.AudioManager;
+import Manager.AudioManager;
 
 public class RenderableHolder {
 	private static RenderableHolder instance;

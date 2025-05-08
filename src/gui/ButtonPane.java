@@ -1,5 +1,6 @@
 package gui;
 
+import Manager.AudioManager;
 import gui.scene.MainMenuState;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -12,7 +13,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.media.AudioClip;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import utilities.AudioManager;
 
 public class ButtonPane extends VBox{
 	private static ButtonPane instance;
@@ -26,7 +26,7 @@ public class ButtonPane extends VBox{
 		this.setPrefWidth(200);
 		this.setPrefHeight(300);
 		this.setAlignment(Pos.TOP_CENTER);
-		this.setSpacing(50);
+		this.setSpacing(45);
 		this.setPadding(new Insets(45,0,0,0));
 		
 		// Create each node by calling their method
@@ -70,7 +70,7 @@ public class ButtonPane extends VBox{
 			AudioManager.playEffect("Audio/ClickEffect.mp3");
 		});
 
-		this.playButton = btn; //c49152
+		this.playButton = btn; 
 		
 	}
 	

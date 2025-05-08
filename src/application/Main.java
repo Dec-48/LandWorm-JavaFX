@@ -1,5 +1,6 @@
 package application;
 
+import Manager.AudioManager;
 import gui.scene.MainMenuState;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -8,7 +9,6 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
 import javafx.scene.media.AudioClip;
 import javafx.stage.Stage;
-import utilities.AudioManager;
 
 public class Main extends Application {
 	
