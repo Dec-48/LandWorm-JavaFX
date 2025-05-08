@@ -1,4 +1,5 @@
 package application;
+import game.controller.GameCanvas;
 import game.controller.GameController;
 import game.object.GridBox;
 import game.object.Player;
@@ -9,6 +10,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import sharedObject.RenderableHolder;
 
 public class Dec48Main extends Application{
 	
@@ -17,28 +19,48 @@ public class Dec48Main extends Application{
 		StackPane root = new StackPane();
 		Scene scene = new Scene(root);
 		primaryStage.setScene(scene);
-		primaryStage.setTitle("Tank game");
+		primaryStage.setTitle("LandWorm");
 
-		Canvas canvas = new Canvas(1000, 580);
-		GraphicsContext gc = canvas.getGraphicsContext2D();
-		root.getChildren().add(canvas);
+		GameCanvas gameCanvas = new GameCanvas(1000, 580); 
+		gameCanvas.addListerner();
+	
+		root.getChildren().add(gameCanvas);
+		gameCanvas.requestFocus(); 
+		
 		GameController gameController = new GameController();
 		gameController.initialGame();
 		GridBox[][] grid = gameController.getGrid();
 		Player playerA = gameController.getPlayerA();
 		Player playerB = gameController.getPlayerB();
 		
+		playerA.setZ(2);
+		playerB.setZ(2); // I have to do this cause the grid will draw over playB blue dot :(
+		
+//		*** TEMPORARY USAGE NAKUB 
+//		** We must not add to RenderableHolder here but in our GameController instead!
+		for (GridBox[] i : grid) {
+			for (GridBox j : i) {
+				RenderableHolder.getInstance().add(j);
+			}
+		}
+		
+		RenderableHolder.getInstance().add(playerA);
+		RenderableHolder.getInstance().add(playerB);
+		
 		AnimationTimer animation = new AnimationTimer() {
 			@Override
 			public void handle(long now) {
-				for (int i = 0; i < 29; i++) {
-					for (int j = 0; j < 50; j++) {
-//						grid[i][j].draw(gc); ไม่ต้องใช้อันนี้ก็ได้ เขียนเองสดๆไปก่อน
 						// render please mr.film 
 						// render grid first
 						// and then render playerA, playerB
-					}
-				}
+						
+		//Message from Film"Okay,since in the video playlist has sorted object holder and we dont so I've made a temporary holder name "RenderableHolder" that have only girdbox and 2 players in package sharedObject (new!)
+				gameCanvas.paintComponent(); //This method paint everything in RenderableHolder to canvas
+//					}
+//				}
+				
+				// 
+				
 			}
 		};
 		animation.start();

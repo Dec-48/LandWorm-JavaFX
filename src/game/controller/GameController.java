@@ -18,7 +18,7 @@ public class GameController {
 			}
 		}
 		playerA.setPosition(new Position(14, 12));
-		playerB.setPosition(new Position(14, 25));
+		playerB.setPosition(new Position(14, 37));
 		grid[14][12].setColor(playerA.getColor());
 		grid[14][12 + 25].setColor(playerB.getColor());
 	}
