@@ -59,6 +59,20 @@ public class GameController {
 		return playerB;
 	}
 
+	public Color getA_color() {
+		return A_color;
+	}
+	public Color getA_TrailColor() {
+		return A_TrailColor;
+	}
+
+	public Color getB_color() {
+		return B_color;
+	}
+	public Color getB_TrailColor() {
+		return B_TrailColor;
+	}
+
 	public GridBox[][] getGrid() {
 		return grid;
 	}
