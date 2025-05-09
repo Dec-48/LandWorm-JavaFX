@@ -16,11 +16,7 @@ public class GridBox extends GameObject{
 	public void setItem(Item item) {
 		this.item = item;
 	}
-	@Override
-	public int getZ() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+
 	@Override
 	public void draw(GraphicsContext gc) {
 		int row = this.getPosition().row;

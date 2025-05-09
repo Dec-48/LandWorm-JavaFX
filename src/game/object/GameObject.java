@@ -4,9 +4,9 @@ import sharedObject.IRenderable;
 
 public abstract class GameObject implements IRenderable{
 	protected Position position;
-	protected int z;
 	protected String color;
 	protected String state;
+	protected int z;
 	
 	public Position getPosition() {
 		return position;
@@ -14,14 +14,7 @@ public abstract class GameObject implements IRenderable{
 	public void setPosition(Position position) {
 		this.position = position;
 	}
-	
-	public int getZ() {
-		return z;
-	}
-	public void setZ(int z) {
-		this.z = z;
-	}
-	
+
 	public String getColor() {
 		return color;
 	}
@@ -34,5 +27,13 @@ public abstract class GameObject implements IRenderable{
 	}
 	public void setState(String state) {
 		this.state = state;
+	}
+	
+	public int getZ() {
+		return this.z;
+	}
+	
+	public void setZ(int z) {
+		this.z = z;
 	}
 }
