@@ -15,8 +15,8 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
-public class SettingPane extends StackPane{
-	private static SettingPane instance;
+public class GameSettingPane extends StackPane{
+	private static GameSettingPane instance;
 	private Canvas leafBackground;
 	private Canvas settingImageCanvas; 
 	private HBox bgmSettingPane;
@@ -24,7 +24,7 @@ public class SettingPane extends StackPane{
 	private VBox elementPane;
 	private Button backButton;
 	
-	private SettingPane() {
+	private GameSettingPane() {
 		super();
 		this.setPrefWidth(800);
 		this.setPrefHeight(600);
@@ -100,21 +100,21 @@ public class SettingPane extends StackPane{
 	private void initializeBackButton() {
 		Button btn = new Button();
 		Canvas buttonDisplayImage = new Canvas(80,80);
-		Image buttonImage = new Image(ClassLoader.getSystemResource("Image/BACKbutton.png").toString());
-		buttonDisplayImage.getGraphicsContext2D().drawImage(buttonImage, 5,5,70,70);
+		Image backImage = new Image(ClassLoader.getSystemResource("Image/BACKbutton.png").toString());
+		buttonDisplayImage.getGraphicsContext2D().drawImage(backImage, 5,5,70,70);
 		btn.setGraphic(buttonDisplayImage);
 		btn.setStyle("-fx-background-color: transparent; -fx-padding: 0;");
 		
 		btn.setOnMouseEntered(e -> {
 			btn.setCursor(Cursor.HAND);
-			buttonDisplayImage.getGraphicsContext2D().drawImage(buttonImage,0,0,80,80);
+			buttonDisplayImage.getGraphicsContext2D().drawImage(backImage,0,0,80,80);
 			btn.setGraphic(buttonDisplayImage);
 		});
 		
 		btn.setOnMouseExited(e -> {
 			btn.setCursor(Cursor.DEFAULT);
 			buttonDisplayImage.getGraphicsContext2D().clearRect(0, 0, buttonDisplayImage.getWidth(), buttonDisplayImage.getHeight());
-			buttonDisplayImage.getGraphicsContext2D().drawImage(buttonImage,5,5,70,70);
+			buttonDisplayImage.getGraphicsContext2D().drawImage(backImage,5,5,70,70);
 			btn.setGraphic(buttonDisplayImage);
 		});
 		
@@ -143,9 +143,9 @@ public class SettingPane extends StackPane{
 	}
 	
 	
-	public static SettingPane getInstance() {
+	public static GameSettingPane getInstance() {
 		if (instance == null) {
-			instance = new SettingPane();
+			instance = new GameSettingPane();
 		}
 		return instance;
 	}

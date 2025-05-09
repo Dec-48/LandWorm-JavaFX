@@ -51,21 +51,21 @@ public class ButtonPane extends VBox{
 	private void initializePlayButton() {
 		Button btn = new Button();
 		Canvas buttonDisplayImage = new Canvas(135 , 75);
-		Image gameLogoImage = new Image(ClassLoader.getSystemResource("Image/PLAYbutton.png").toString());
-		buttonDisplayImage.getGraphicsContext2D().drawImage(gameLogoImage,5,5,125,65);
+		Image playImage = new Image(ClassLoader.getSystemResource("Image/PLAYbutton.png").toString());
+		buttonDisplayImage.getGraphicsContext2D().drawImage(playImage,5,5,125,65);
 		btn.setGraphic(buttonDisplayImage);
 		btn.setStyle("-fx-background-color: transparent; -fx-padding: 0;");
 
 		btn.setOnMouseEntered(e -> {
 			btn.setCursor(Cursor.HAND);
-			buttonDisplayImage.getGraphicsContext2D().drawImage(gameLogoImage,0,0,135,75);
+			buttonDisplayImage.getGraphicsContext2D().drawImage(playImage,0,0,135,75);
 			btn.setGraphic(buttonDisplayImage);
 		});
 		
 		btn.setOnMouseExited(e -> {
 			btn.setCursor(Cursor.DEFAULT);
 			buttonDisplayImage.getGraphicsContext2D().clearRect(0, 0, buttonDisplayImage.getWidth(), buttonDisplayImage.getHeight());
-			buttonDisplayImage.getGraphicsContext2D().drawImage(gameLogoImage,5,5,125,65);
+			buttonDisplayImage.getGraphicsContext2D().drawImage(playImage,5,5,125,65);
 			btn.setGraphic(buttonDisplayImage);
 		});
 		
@@ -81,21 +81,21 @@ public class ButtonPane extends VBox{
 	private void initializeSettingButton() {
 		Button btn = new Button();
 		Canvas buttonDisplayImage = new Canvas(135 , 75);
-		Image gameLogoImage = new Image(ClassLoader.getSystemResource("Image/SETTINGbutton.png").toString());
-		buttonDisplayImage.getGraphicsContext2D().drawImage(gameLogoImage,5,5,125,65);
+		Image settingImage = new Image(ClassLoader.getSystemResource("Image/SETTINGbutton.png").toString());
+		buttonDisplayImage.getGraphicsContext2D().drawImage(settingImage,5,5,125,65);
 		btn.setGraphic(buttonDisplayImage);
 		btn.setStyle("-fx-background-color: transparent; -fx-padding: 0;");
 
 		btn.setOnMouseEntered(e -> {
 			btn.setCursor(Cursor.HAND);
-			buttonDisplayImage.getGraphicsContext2D().drawImage(gameLogoImage,0,0,135,75);
+			buttonDisplayImage.getGraphicsContext2D().drawImage(settingImage,0,0,135,75);
 			btn.setGraphic(buttonDisplayImage);
 		});
 		
 		btn.setOnMouseExited(e -> {
 			btn.setCursor(Cursor.DEFAULT);
 			buttonDisplayImage.getGraphicsContext2D().clearRect(0, 0, buttonDisplayImage.getWidth(), buttonDisplayImage.getHeight());
-			buttonDisplayImage.getGraphicsContext2D().drawImage(gameLogoImage,5,5,125,65);
+			buttonDisplayImage.getGraphicsContext2D().drawImage(settingImage,5,5,125,65);
 			btn.setGraphic(buttonDisplayImage);
 		});
 		
@@ -103,7 +103,7 @@ public class ButtonPane extends VBox{
 			AudioManager.playEffect("Audio/ClickEffect.mp3");
 			
 			MainMenuScene.getInstance().getChildren().remove(1);
-			MainMenuScene.getInstance().getChildren().addAll(SettingPane.getInstance());
+			MainMenuScene.getInstance().getChildren().addAll(GameSettingPane.getInstance());
 		});
 		
 		this.settingButton = btn;
@@ -112,21 +112,21 @@ public class ButtonPane extends VBox{
 	private void initializeExitButton() {
 		Button btn = new Button();
 		Canvas buttonDisplayImage = new Canvas(135 , 75);
-		Image gameLogoImage = new Image(ClassLoader.getSystemResource("Image/EXITbutton.png").toString());
-		buttonDisplayImage.getGraphicsContext2D().drawImage(gameLogoImage,5,5,125,65);
+		Image exitImage = new Image(ClassLoader.getSystemResource("Image/EXITbutton.png").toString());
+		buttonDisplayImage.getGraphicsContext2D().drawImage(exitImage,5,5,125,65);
 		btn.setGraphic(buttonDisplayImage);
 		btn.setStyle("-fx-background-color: transparent; -fx-padding: 0;");
 
 		btn.setOnMouseEntered(e -> {
 			btn.setCursor(Cursor.HAND);
-			buttonDisplayImage.getGraphicsContext2D().drawImage(gameLogoImage,0,0,135,75);
+			buttonDisplayImage.getGraphicsContext2D().drawImage(exitImage,0,0,135,75);
 			btn.setGraphic(buttonDisplayImage);
 		});
 		
 		btn.setOnMouseExited(e -> {
 			btn.setCursor(Cursor.DEFAULT);
 			buttonDisplayImage.getGraphicsContext2D().clearRect(0, 0, buttonDisplayImage.getWidth(), buttonDisplayImage.getHeight());
-			buttonDisplayImage.getGraphicsContext2D().drawImage(gameLogoImage,5,5,125,65);
+			buttonDisplayImage.getGraphicsContext2D().drawImage(exitImage,5,5,125,65);
 			btn.setGraphic(buttonDisplayImage);
 		});
 		

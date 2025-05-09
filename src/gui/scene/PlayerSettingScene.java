@@ -4,9 +4,11 @@ package gui.scene;
 import Manager.AudioManager;
 import Manager.SceneManager;
 import game.controller.GameController;
+import gui.ButtonPane;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Label;
@@ -22,8 +24,11 @@ public class PlayerSettingScene extends StackPane implements ChangeableScene {
 	private Canvas background;
 	private VBox settingPane;
 	private Label chooseYourColor;
+	private Label playerKeypress;
 	private HBox wormPane;
 	private HBox colorSelectPane;
+	private Canvas backButton;
+	private Canvas startButton;
 	private boolean running = true;
 	
 	private PlayerSettingScene() {
@@ -36,8 +41,10 @@ public class PlayerSettingScene extends StackPane implements ChangeableScene {
 		background.getGraphicsContext2D().drawImage(backgroundImage,0,0,1000,600);
 		
 		initializeLabel();
-		initializeColorSelectingPane();
 		initializeShow2WormColorPane();
+		initializeColorSelectingPane();
+		initializeBackPane();
+		initializeStartPlayingPane();
 		initializeSettingPane();
 		
 		this.getChildren().addAll(background,settingPane);
@@ -48,26 +55,35 @@ public class PlayerSettingScene extends StackPane implements ChangeableScene {
 		settingPane.setPrefHeight(500);
 		settingPane.setPrefWidth(800);
 		settingPane.setAlignment(Pos.TOP_CENTER);
-		settingPane.setPadding(new Insets(57,0,0,0));
-		settingPane.getChildren().addAll(chooseYourColor,colorSelectPane,wormPane);
+		settingPane.setSpacing(30);
+		settingPane.setPadding(new Insets(70,0,0,0));
+		HBox hbox = new HBox();
+		hbox.getChildren().addAll(backButton,startButton);
+		hbox.setSpacing(700);
+		hbox.setAlignment(Pos.CENTER);
+		hbox.setPadding(new Insets(-40,0,0,0));
+		settingPane.getChildren().addAll(chooseYourColor,playerKeypress,wormPane,colorSelectPane,hbox);
 	}
 	
 	private void initializeLabel() {
 		chooseYourColor = new Label("Choose Your Color!");
-        Font customFont = Font.loadFont(getClass().getResourceAsStream("/Font/PressStart2P-Regular.ttf"), 30);
-        if (customFont != null) {
-            chooseYourColor.setFont(customFont);
-        }
+		playerKeypress = new Label("   Left Player [ W A S D ]             Right Player [ Arrow Keys ]");
+        Font firstFont = Font.loadFont(getClass().getResourceAsStream("/Font/PressStart2P-Regular.ttf"), 30);
+        Font secondFont = Font.loadFont(getClass().getResourceAsStream("/Font/PressStart2P-Regular.ttf"), 13);
+        chooseYourColor.setFont(firstFont);
         chooseYourColor.setTextFill(Color.YELLOW);
+        playerKeypress.setFont(secondFont);
+        playerKeypress.setTextFill(Color.GRAY);
+        playerKeypress.setPadding(new Insets(25,0,0,0));
 	}
 	
 	
-	//if worm has it's color already
-	private void initializeShow2WormColorPane() { //worm using Thread
+	private void initializeShow2WormColorPane() {
 		wormPane = new HBox();
 		wormPane.setPrefHeight(200);
 		wormPane.setPrefWidth(800);
-		wormPane.setSpacing(100);
+		wormPane.setSpacing(270);
+		wormPane.setPadding(new Insets(70,0,0,0));
 		wormPane.setAlignment(Pos.CENTER);
 		
 		Canvas wormA = new Canvas(200,200);
@@ -157,7 +173,8 @@ public class PlayerSettingScene extends StackPane implements ChangeableScene {
 		colorSelectPane = new HBox();
 		colorSelectPane.setPrefWidth(800);
 		colorSelectPane.setPrefHeight(60);
-		colorSelectPane.setSpacing(200);
+		colorSelectPane.setSpacing(150);
+		colorSelectPane.setPadding(new Insets(-60,0,0,0));
 		colorSelectPane.setAlignment(Pos.CENTER);
 		
 		Image redButtonImage = new Image(ClassLoader.getSystemResource("Image/ColorButton/RedButton.PNG").toString());
@@ -167,7 +184,7 @@ public class PlayerSettingScene extends StackPane implements ChangeableScene {
 		Image pinkButtonImage = new Image(ClassLoader.getSystemResource("Image/ColorButton/PinkButton.PNG").toString());
 		
 		Canvas redButtonA = new Canvas(60,60);
-		redButtonA.getGraphicsContext2D().drawImage(redButtonImage,5,5,50,50);
+		redButtonA.getGraphicsContext2D().drawImage(redButtonImage,0,0,60,60);
 		redButtonA.setOnMouseClicked(e -> {
 			if (GameController.getInstance().getB_color() != Color.RED) {
 				AudioManager.playEffect("Audio/ClickEffect.mp3");
@@ -175,7 +192,7 @@ public class PlayerSettingScene extends StackPane implements ChangeableScene {
 			}
 		});
 		Canvas yellowButtonA = new Canvas(60,60);
-		yellowButtonA.getGraphicsContext2D().drawImage(yellowButtonImage,5,5,50,50);
+		yellowButtonA.getGraphicsContext2D().drawImage(yellowButtonImage,0,0,60,60);
 		yellowButtonA.setOnMouseClicked(e -> {
 			if (GameController.getInstance().getB_color() != Color.YELLOW) {
 				AudioManager.playEffect("Audio/ClickEffect.mp3");
@@ -183,7 +200,7 @@ public class PlayerSettingScene extends StackPane implements ChangeableScene {
 			}
 		});
 		Canvas greenButtonA = new Canvas(60,60);
-		greenButtonA.getGraphicsContext2D().drawImage(greenButtonImage,5,5,50,50);
+		greenButtonA.getGraphicsContext2D().drawImage(greenButtonImage,0,0,60,60);
 		greenButtonA.setOnMouseClicked(e -> {
 			if (GameController.getInstance().getB_color() != Color.GREEN) {
 				AudioManager.playEffect("Audio/ClickEffect.mp3");
@@ -191,7 +208,7 @@ public class PlayerSettingScene extends StackPane implements ChangeableScene {
 			}
 		});
 		Canvas blueButtonA = new Canvas(60,60);
-		blueButtonA.getGraphicsContext2D().drawImage(blueButtonImage,5,5,50,50);
+		blueButtonA.getGraphicsContext2D().drawImage(blueButtonImage,0,0,60,60);
 		blueButtonA.setOnMouseClicked(e -> {
 			if (GameController.getInstance().getB_color() != Color.BLUE) {
 				AudioManager.playEffect("Audio/ClickEffect.mp3");
@@ -199,7 +216,7 @@ public class PlayerSettingScene extends StackPane implements ChangeableScene {
 			}
 		});
 		Canvas pinkButtonA = new Canvas(60,60);
-		pinkButtonA.getGraphicsContext2D().drawImage(pinkButtonImage,5,5,50,50);
+		pinkButtonA.getGraphicsContext2D().drawImage(pinkButtonImage,0,0,60,60);
 		pinkButtonA.setOnMouseClicked(e -> {
 			if (GameController.getInstance().getB_color() != Color.PINK) {
 				AudioManager.playEffect("Audio/ClickEffect.mp3");
@@ -208,7 +225,7 @@ public class PlayerSettingScene extends StackPane implements ChangeableScene {
 		});
 		
 		Canvas redButtonB = new Canvas(60,60);
-		redButtonB.getGraphicsContext2D().drawImage(redButtonImage,5,5,50,50);
+		redButtonB.getGraphicsContext2D().drawImage(redButtonImage,0,0,60,60);
 		redButtonB.setOnMouseClicked(e -> {
 			if (GameController.getInstance().getA_color() != Color.RED) {
 				AudioManager.playEffect("Audio/ClickEffect.mp3");
@@ -216,7 +233,7 @@ public class PlayerSettingScene extends StackPane implements ChangeableScene {
 			}
 		});
 		Canvas yellowButtonB = new Canvas(60,60);
-		yellowButtonB.getGraphicsContext2D().drawImage(yellowButtonImage,5,5,50,50);
+		yellowButtonB.getGraphicsContext2D().drawImage(yellowButtonImage,0,0,60,60);
 		yellowButtonB.setOnMouseClicked(e -> {
 			if (GameController.getInstance().getA_color() != Color.YELLOW) {
 				AudioManager.playEffect("Audio/ClickEffect.mp3");
@@ -224,7 +241,7 @@ public class PlayerSettingScene extends StackPane implements ChangeableScene {
 			}
 		});
 		Canvas greenButtonB = new Canvas(60,60);
-		greenButtonB.getGraphicsContext2D().drawImage(greenButtonImage,5,5,50,50);
+		greenButtonB.getGraphicsContext2D().drawImage(greenButtonImage,0,0,60,60);
 		greenButtonB.setOnMouseClicked(e -> {
 			if (GameController.getInstance().getA_color() != Color.GREEN) {
 				AudioManager.playEffect("Audio/ClickEffect.mp3");
@@ -232,7 +249,7 @@ public class PlayerSettingScene extends StackPane implements ChangeableScene {
 			}
 		});
 		Canvas blueButtonB = new Canvas(60,60);
-		blueButtonB.getGraphicsContext2D().drawImage(blueButtonImage,5,5,50,50);
+		blueButtonB.getGraphicsContext2D().drawImage(blueButtonImage,0,0,60,60);
 		blueButtonB.setOnMouseClicked(e -> {
 			if (GameController.getInstance().getA_color() != Color.BLUE) {
 				AudioManager.playEffect("Audio/ClickEffect.mp3");
@@ -240,7 +257,7 @@ public class PlayerSettingScene extends StackPane implements ChangeableScene {
 			}
 		});
 		Canvas pinkButtonB = new Canvas(60,60);
-		pinkButtonB.getGraphicsContext2D().drawImage(pinkButtonImage,5,5,50,50);
+		pinkButtonB.getGraphicsContext2D().drawImage(pinkButtonImage,0,0,60,60);
 		pinkButtonB.setOnMouseClicked(e -> {
 			if (GameController.getInstance().getA_color() != Color.PINK) {
 				AudioManager.playEffect("Audio/ClickEffect.mp3");
@@ -263,14 +280,64 @@ public class PlayerSettingScene extends StackPane implements ChangeableScene {
 		colorSelectPane.getChildren().addAll(playerASelectPane,playerBSelectPane);
 	}
 	
+	private void initializeBackPane() {
+		backButton = new Canvas(100,80);
+		Image backImage = new Image(ClassLoader.getSystemResource("Image/BACKbutton.png").toString());
+		backButton.getGraphicsContext2D().drawImage(backImage,5,5,90,70);
+		
+		backButton.setOnMouseEntered(e -> {
+			backButton.setCursor(Cursor.HAND);
+			backButton.getGraphicsContext2D().drawImage(backImage,0,0,100,80);
+		});
+		
+		backButton.setOnMouseExited(e -> {
+			backButton.setCursor(Cursor.DEFAULT);
+			backButton.getGraphicsContext2D().clearRect(0, 0, 100,80 );
+			backButton.getGraphicsContext2D().drawImage(backImage,5,5,90,70);
+		});
+		
+		backButton.setOnMouseClicked(e -> {
+			AudioManager.playEffect("Audio/ClickEffect.mp3");
+			SceneManager.getInstance().setScene(MainMenuScene.getInstance());
+		});
+		
+
+	}
+	
+	private void initializeStartPlayingPane(){
+		startButton = new Canvas(140,110);
+		Image startImage = new Image(ClassLoader.getSystemResource("Image/STARTbutton.png").toString());
+		startButton.getGraphicsContext2D().drawImage(startImage,5,5,130,100);
+		
+		startButton.setOnMouseEntered(e -> {
+			startButton.setCursor(Cursor.HAND);
+			startButton.getGraphicsContext2D().drawImage(startImage,0,0,140,110);
+		});
+		
+		startButton.setOnMouseExited(e -> {
+			startButton.setCursor(Cursor.DEFAULT);
+			startButton.getGraphicsContext2D().clearRect(0, 0, 140,110 );
+			startButton.getGraphicsContext2D().drawImage(startImage,5,5,130,100);
+		});
+		
+		startButton.setOnMouseClicked(e -> {
+			AudioManager.playEffect("Audio/ClickEffect.mp3");
+			SceneManager.getInstance().setScene(GamePlayScene.getInstance());
+		});
+		
+	}
+	
     public void start(SceneManager sceneManager) {
         Scene scene = new Scene(this, 1000, 600);
         sceneManager.getStage().setScene(scene);
         sceneManager.getStage().show();
+        AudioManager.playBGM("Audio/PlayerSettingColorBGM.mp3");
     }
 	
 	public void stop(SceneManager sceneManager) {
-
+		running = false;
+		AudioManager.stopBGM();
+		instance = null;
 	}
 	
 	public static PlayerSettingScene getInstance() {

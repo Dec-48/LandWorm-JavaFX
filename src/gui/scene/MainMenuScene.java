@@ -33,7 +33,6 @@ public class MainMenuScene extends StackPane implements ChangeableScene {
 		buttonPane = ButtonPane.getInstance();
 	
 		this.getChildren().addAll(background,buttonPane);
-		AudioManager.playBGM("Audio/MainMenuBGM.mp3");
 		
 		backgroundThread = new Thread(() ->{
 			while (running) {
@@ -63,11 +62,14 @@ public class MainMenuScene extends StackPane implements ChangeableScene {
 		Scene scene = new Scene(this, 1000, 600);
 		sceneManager.getStage().setScene(scene);
 		sceneManager.getStage().show();
+		AudioManager.playBGM("Audio/MainMenuBGM.mp3");
 	}
 
 	public void stop(SceneManager sceneManager) {
+
 		running = false;
 		AudioManager.stopBGM();
+		instance = null;
 	}
 
 	public static MainMenuScene getInstance() {
