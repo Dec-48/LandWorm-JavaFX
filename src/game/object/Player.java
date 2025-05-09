@@ -18,7 +18,7 @@ public class Player extends GameObject{
 	private ArrayList<KeyCode> movingKey;
 
 	public Player(KeyCode[] movingKey) {
-		this.setSpeed(10);
+		this.setSpeed(18);
 		this.setPaintSize(1);
 		this.setDirection("N");
 		this.setCurrentTrail(new ArrayList<GridBox>());

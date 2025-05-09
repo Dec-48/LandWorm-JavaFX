@@ -8,6 +8,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 
 public class GameController {
+	private static GameController instance;
 	private KeyCode[] movingKeyA = {KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D};
 	private KeyCode[] movingKeyB = {KeyCode.UP, KeyCode.LEFT, KeyCode.DOWN, KeyCode.RIGHT};
 	private Player playerA = new Player(movingKeyA);
@@ -46,23 +47,8 @@ public class GameController {
 		int Brow = playerB.getPosition().row;
 		int Bcol = playerB.getPosition().col;
 		
-		// |0 -> chill|1 -> kill itself|2 -> kill other| 
-		int AplayerState = grid[Arow][Acol].paintTrail(A_TrailColor);
-		if (AplayerState == 0) { // Chill
-			playerA.addCurrentTrail(grid[Arow][Acol]);
-		} else if (AplayerState == 1) { // TODO: remove A's currentTrail and kill A
-			
-		} else { // TODO : remove B's currentTrail and kill B
-			
-		}
-		int BplayerState = grid[Brow][Bcol].paintTrail(B_TrailColor);
-		if (BplayerState == 0) {
-			playerB.addCurrentTrail(grid[Brow][Bcol]);			
-		} else if (BplayerState == 1) { // TODO : remove B's currentTrail and kill B
-			
-		} else { // TODO : remove A's currentTrail and kill A
-			
-		}
+		grid[Arow][Acol].paintTrail(A_TrailColor);
+		grid[Brow][Bcol].paintTrail(B_TrailColor);
 	}
 
 	public Player getPlayerA() {
@@ -85,5 +71,12 @@ public class GameController {
 	public void setPlayerBcolors(Color playerColor, Color trailColor) {
 		this.B_color = playerColor;
 		this.B_TrailColor = trailColor;
+	}
+	
+	public static GameController getInstance() {
+		if (instance == null) {
+			instance = new GameController();
+		}
+		return instance;
 	}
 }

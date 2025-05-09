@@ -2,6 +2,7 @@ package application;
 
 import Manager.AudioManager;
 import Manager.SceneManager;
+import game.controller.GameController;
 import gui.scene.MainMenuScene;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -24,7 +25,7 @@ public class Main extends Application {
             Platform.exit();       
             System.exit(0);         
         });
-
+//      GameController.
         SceneManager.getInstance(primaryStage).setScene(MainMenuScene.getInstance());
 	}
 	
