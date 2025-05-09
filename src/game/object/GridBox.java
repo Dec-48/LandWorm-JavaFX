@@ -10,6 +10,18 @@ public class GridBox extends GameObject{
 		this.color = Color.BISQUE;
 		this.setPosition(new Position(row, col));
 	}
+	
+	public void paintTrail(Color trailColor) {
+		if (this.color != trailColor) { // TODO : this can be used to indicate death state of player
+			this.setColor(trailColor);
+			this.state = gridState.Trail;
+		}
+		else if (this.state != gridState.SafeZone) {
+			this.setColor(trailColor);
+			this.state = gridState.Trail;
+		}
+	}
+	
 	public Item getItem() {
 		return item;
 	}

@@ -3,6 +3,7 @@ package game.controller;
 import game.object.GridBox;
 import game.object.Player;
 import game.object.Position;
+import game.object.gridState;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 
@@ -27,13 +28,26 @@ public class GameController {
 		}
 		playerA.setPosition(new Position(14, 12));
 		playerB.setPosition(new Position(14, 37));
+		for (int di = -1; di <= 1; di++) {
+			for (int dj = -1; dj <= 1; dj++) {
+				grid[14 + di][12 + dj].setColor(A_TrailColor);
+				grid[14 + di][12 + dj].setState(gridState.SafeZone);
+				grid[14 + di][37 + dj].setColor(B_TrailColor);
+				grid[14 + di][37 + dj].setState(gridState.SafeZone);
+			}
+		}
 	}
 	
 	public void update() {
 		playerA.move(); // move playerA along the direction from inputUtility
-		grid[playerA.getPosition().row][playerA.getPosition().col].setColor(A_TrailColor);
 		playerB.move(); // move playerB along the direction from inputUtility
-		grid[playerB.getPosition().row][playerB.getPosition().col].setColor(B_TrailColor);
+		int Arow = playerA.getPosition().row;
+		int Acol = playerA.getPosition().col;
+		int Brow = playerB.getPosition().row;
+		int Bcol = playerB.getPosition().col;
+		
+		grid[Arow][Acol].paintTrail(A_TrailColor);
+		grid[Brow][Bcol].paintTrail(B_TrailColor);
 	}
 
 	public Player getPlayerA() {
