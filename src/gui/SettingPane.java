@@ -1,7 +1,7 @@
 package gui;
 
 import Manager.AudioManager;
-import gui.scene.MainMenuState;
+import gui.scene.MainMenuScene;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
@@ -121,8 +121,8 @@ public class SettingPane extends StackPane{
 		btn.setOnMouseClicked(e -> {
 			AudioManager.playEffect("Audio/ClickEffect.mp3");
 			
-			MainMenuState.getInstance().getChildren().clear();
-			MainMenuState.getInstance().getChildren().addAll(MainMenuState.getBackgroundCanvas(),ButtonPane.getInstance());
+			MainMenuScene.getInstance().getChildren().remove(1);
+			MainMenuScene.getInstance().getChildren().addAll(ButtonPane.getInstance());
 		});
 		
 		this.backButton = btn;
