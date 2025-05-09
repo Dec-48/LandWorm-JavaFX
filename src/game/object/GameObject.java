@@ -1,13 +1,21 @@
 package game.object;
 
+import javafx.scene.paint.Paint;
 import sharedObject.IRenderable;
 
 public abstract class GameObject implements IRenderable{
 	protected Position position;
+	protected Paint color;
+	protected gridState state = gridState.Blank;
 	protected int z;
-	protected String color;
-	protected String state;
 	
+	public Paint getColor() {
+		return color;
+	}
+	public void setColor(Paint color) {
+		this.color = color;
+	}
+
 	public Position getPosition() {
 		return position;
 	}
@@ -15,24 +23,17 @@ public abstract class GameObject implements IRenderable{
 		this.position = position;
 	}
 	
+	public gridState getState() {
+		return state;
+	}
+	public void setState(gridState state) {
+		this.state = state;
+	}
+	
 	public int getZ() {
-		return z;
+		return this.z;
 	}
 	public void setZ(int z) {
 		this.z = z;
-	}
-	
-	public String getColor() {
-		return color;
-	}
-	public void setColor(String color) {
-		this.color = color;
-	}
-	
-	public String getState() {
-		return state;
-	}
-	public void setState(String state) {
-		this.state = state;
 	}
 }

@@ -50,17 +50,8 @@ public class Dec48Main extends Application{
 		AnimationTimer animation = new AnimationTimer() {
 			@Override
 			public void handle(long now) {
-						// render please mr.film 
-						// render grid first
-						// and then render playerA, playerB
-						
-		//Message from Film"Okay,since in the video playlist has sorted object holder and we dont so I've made a temporary holder name "RenderableHolder" that have only girdbox and 2 players in package sharedObject (new!)
-				gameCanvas.paintComponent(); //This method paint everything in RenderableHolder to canvas
-//					}
-//				}
-				
-				// 
-				
+				gameController.update();
+				gameCanvas.paintComponent(); 				
 			}
 		};
 		animation.start();

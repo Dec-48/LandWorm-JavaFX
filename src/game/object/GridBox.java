@@ -7,31 +7,33 @@ public class GridBox extends GameObject{
 	private Item item;
 	
 	public GridBox(int row, int col) {
-		this.setColor("G");
+		this.color = Color.BISQUE;
 		this.setPosition(new Position(row, col));
 	}
+	
+	public void paintTrail(Color trailColor) {
+		if (this.color != trailColor) { // TODO : this can be used to indicate death state of player
+			this.setColor(trailColor);
+			this.state = gridState.Trail;
+		}
+		else if (this.state != gridState.SafeZone) {
+			this.setColor(trailColor);
+			this.state = gridState.Trail;
+		}
+	}
+	
 	public Item getItem() {
 		return item;
 	}
 	public void setItem(Item item) {
 		this.item = item;
 	}
-	@Override
-	public int getZ() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+
 	@Override
 	public void draw(GraphicsContext gc) {
 		int row = this.getPosition().row;
 		int col = this.getPosition().col;
-		if (this.color == "R") {
-			gc.setFill(Color.RED);
-		} else if (this.color == "B") {
-			gc.setFill(Color.BLUE);
-		} else {
-			gc.setFill(Color.GREEN);
-		}
+		gc.setFill(this.color);
 		gc.fillRoundRect(col * 20, row * 20, 20, 20, 3, 3);
 	}
 }
