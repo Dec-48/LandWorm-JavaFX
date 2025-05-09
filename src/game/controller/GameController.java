@@ -46,8 +46,23 @@ public class GameController {
 		int Brow = playerB.getPosition().row;
 		int Bcol = playerB.getPosition().col;
 		
-		grid[Arow][Acol].paintTrail(A_TrailColor);
-		grid[Brow][Bcol].paintTrail(B_TrailColor);
+		// |0 -> chill|1 -> kill itself|2 -> kill other| 
+		int AplayerState = grid[Arow][Acol].paintTrail(A_TrailColor);
+		if (AplayerState == 0) { // Chill
+			playerA.addCurrentTrail(grid[Arow][Acol]);
+		} else if (AplayerState == 1) { // TODO: remove A's currentTrail and kill A
+			
+		} else { // TODO : remove B's currentTrail and kill B
+			
+		}
+		int BplayerState = grid[Brow][Bcol].paintTrail(B_TrailColor);
+		if (BplayerState == 0) {
+			playerB.addCurrentTrail(grid[Brow][Bcol]);			
+		} else if (BplayerState == 1) { // TODO : remove B's currentTrail and kill B
+			
+		} else { // TODO : remove A's currentTrail and kill A
+			
+		}
 	}
 
 	public Player getPlayerA() {

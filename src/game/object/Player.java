@@ -110,6 +110,10 @@ public class Player extends GameObject{
 		this.currentTrail = currentTrail;
 	}
 	
+	public void addCurrentTrail(GridBox gb) {
+		this.currentTrail.add(gb);
+	}
+	
 	@Override
 	public void draw(GraphicsContext gc) {
 		// TODO Auto-generated method stub
