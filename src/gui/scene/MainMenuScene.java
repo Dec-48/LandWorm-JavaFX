@@ -15,9 +15,10 @@ import javafx.scene.layout.VBox;
 
 public class MainMenuScene extends StackPane implements ChangeableScene {
 	private static MainMenuScene instance;
-	private static ButtonPane BUTTONPANE;
+	private ButtonPane buttonPane;
 	private Canvas background;
 	private Thread backgroundThread;
+	private boolean running = true;
 	
 	private MainMenuScene() {
 		super();
@@ -29,13 +30,13 @@ public class MainMenuScene extends StackPane implements ChangeableScene {
 		Image secondBackgroundImage = new Image(ClassLoader.getSystemResource("Image/MainMenuBackground2.png").toString());
 		background.getGraphicsContext2D().drawImage(backgroundImage,0,0,1000,600);
 		
-		BUTTONPANE = ButtonPane.getInstance();
+		buttonPane = ButtonPane.getInstance();
 	
-		this.getChildren().addAll(background,BUTTONPANE);
+		this.getChildren().addAll(background,buttonPane);
 		AudioManager.playBGM("Audio/MainMenuBGM.mp3");
 		
 		backgroundThread = new Thread(() ->{
-			while (true) {
+			while (running) {
 				try {
 					Thread.sleep(800);
 					Platform.runLater(() ->{
@@ -58,15 +59,14 @@ public class MainMenuScene extends StackPane implements ChangeableScene {
 	
 
 	@Override
-    public void start(SceneManager sceneManager) {
-        // Create and set Scene with this StackPane
-        Scene scene = new Scene(this, 1000, 600);
-        sceneManager.getStage().setScene(scene);
-        sceneManager.getStage().show();
-    }
-	
+	public void start(SceneManager sceneManager) {
+		Scene scene = new Scene(this, 1000, 600);
+		sceneManager.getStage().setScene(scene);
+		sceneManager.getStage().show();
+	}
+
 	public void stop(SceneManager sceneManager) {
-		backgroundThread.interrupt();
+		running = false;
 		AudioManager.stopBGM();
 	}
 

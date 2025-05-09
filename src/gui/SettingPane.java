@@ -50,9 +50,9 @@ public class SettingPane extends StackPane{
 	}
 	 
 	private void initializeSettingImage() {
-		Canvas settingCanvas = new Canvas(200,100);
+		Canvas settingCanvas = new Canvas(240,120);
 		Image settingImage = new Image(ClassLoader.getSystemResourceAsStream("Image/SETTINGImage.png"));
-		settingCanvas.getGraphicsContext2D().drawImage(settingImage,20,0,200,110);
+		settingCanvas.getGraphicsContext2D().drawImage(settingImage,20,0,240,120);
 		settingImageCanvas = settingCanvas;
 	}
 	
@@ -65,7 +65,7 @@ public class SettingPane extends StackPane{
 		Image bgmImage = new Image(ClassLoader.getSystemResource("Image/BGMImage.png").toString());
 		bgmSign.getGraphicsContext2D().drawImage(bgmImage,0,0,149,108);
 		
-		Slider bgmSlider = new Slider(0, 1, 0.2); 
+		Slider bgmSlider = new Slider(0, 0.6, 0.2); 
         bgmSlider.setPrefWidth(150);
         bgmSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             AudioManager.setBGMVolume(newVal.doubleValue());
@@ -136,7 +136,7 @@ public class SettingPane extends StackPane{
 		HBox backButtonContainer = new HBox();
         backButtonContainer.setAlignment(Pos.CENTER_LEFT); 
         backButtonContainer.getChildren().add(backButton);
-        backButtonContainer.setPadding(new Insets(0,0,0,270));
+        backButtonContainer.setPadding(new Insets(0,0,0,300));
 			
 		elementPane.getChildren().addAll(settingImageCanvas,bgmSettingPane,effectSettingPane,backButtonContainer);
 		
