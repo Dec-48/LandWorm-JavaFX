@@ -115,13 +115,8 @@ public class Player extends GameObject{
 		// TODO Auto-generated method stub
 		int row = this.position.row;
 		int col = this.position.col;
-		if (this.color == "R") {
-			gc.setFill(Color.DARKRED);
-		} else if (this.color == "B") {
-			gc.setFill(Color.DARKBLUE);
-		}
+		gc.setFill(this.color);
 		gc.fillOval(col * 20, row * 20, 10, 10);
-//		gc.fillRoundRect(col * 20, row * 20, 10, 10, 3, 3);
 	}
 	
 	public void setMovingKey(KeyCode[] movingKey) {

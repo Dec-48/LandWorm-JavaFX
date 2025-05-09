@@ -1,10 +1,18 @@
 package game.object;
 
+import javafx.scene.paint.Paint;
 import sharedObject.IRenderable;
 
 public abstract class GameObject implements IRenderable{
 	protected Position position;
-	protected String color;
+	protected Paint color;
+	public Paint getColor() {
+		return color;
+	}
+	public void setColor(Paint color) {
+		this.color = color;
+	}
+
 	protected String state;
 	protected int z;
 	
@@ -13,13 +21,6 @@ public abstract class GameObject implements IRenderable{
 	}
 	public void setPosition(Position position) {
 		this.position = position;
-	}
-
-	public String getColor() {
-		return color;
-	}
-	public void setColor(String color) {
-		this.color = color;
 	}
 	
 	public String getState() {

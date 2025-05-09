@@ -7,7 +7,7 @@ public class GridBox extends GameObject{
 	private Item item;
 	
 	public GridBox(int row, int col) {
-		this.setColor("G");
+		this.color = Color.BISQUE;
 		this.setPosition(new Position(row, col));
 	}
 	public Item getItem() {
@@ -21,13 +21,7 @@ public class GridBox extends GameObject{
 	public void draw(GraphicsContext gc) {
 		int row = this.getPosition().row;
 		int col = this.getPosition().col;
-		if (this.color == "R") {
-			gc.setFill(Color.RED);
-		} else if (this.color == "B") {
-			gc.setFill(Color.BLUE);
-		} else {
-			gc.setFill(Color.GREEN);
-		}
+		gc.setFill(this.color);
 		gc.fillRoundRect(col * 20, row * 20, 20, 20, 3, 3);
 	}
 }
