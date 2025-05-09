@@ -3,6 +3,8 @@ package gui;
 import Manager.AudioManager;
 import Manager.SceneManager;
 import gui.scene.MainMenuScene;
+import gui.scene.PlayerSettingScene;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
@@ -69,7 +71,7 @@ public class ButtonPane extends VBox{
 		
 		btn.setOnMouseClicked(e -> {
 			AudioManager.playEffect("Audio/ClickEffect.mp3");
-//			SceneManager.getInstance().setScene();
+			SceneManager.getInstance().setScene(PlayerSettingScene.getInstance());
 		});
 
 		this.playButton = btn; 
@@ -130,6 +132,8 @@ public class ButtonPane extends VBox{
 		
 		btn.setOnMouseClicked(e -> {
 			AudioManager.playEffect("Audio/ClickEffect.mp3");
+			System.exit(0); 
+            Platform.exit(); 
 		});
 		
 		this.exitButton = btn;
