@@ -1,7 +1,8 @@
 package application;
 
 import Manager.AudioManager;
-import gui.scene.MainMenuState;
+import Manager.SceneManager;
+import gui.scene.MainMenuScene;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -15,10 +16,6 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 
-		StackPane root = MainMenuState.getInstance();
-		Scene scene = new Scene(root);
-		
-		primaryStage.setScene(scene);
 		primaryStage.setTitle("LandWorm");
 		primaryStage.getIcons().add(new Image(ClassLoader.getSystemResource("Image/GameIcon.PNG").toString()));
 		primaryStage.setResizable(false);
@@ -27,8 +24,8 @@ public class Main extends Application {
             Platform.exit();       
             System.exit(0);         
         });
-		primaryStage.show();
 
+        SceneManager.getInstance(primaryStage).setScene(MainMenuScene.getInstance());
 	}
 	
 	public static void main(String[] args) {

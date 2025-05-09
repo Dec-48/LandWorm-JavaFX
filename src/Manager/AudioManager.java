@@ -1,6 +1,6 @@
 package Manager;
 
-import gui.scene.MainMenuState;
+import gui.scene.MainMenuScene;
 import javafx.scene.media.AudioClip;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
