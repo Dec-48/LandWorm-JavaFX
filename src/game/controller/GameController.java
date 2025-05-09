@@ -14,9 +14,9 @@ public class GameController {
 	private Player playerA = new Player(movingKeyA);
 	private Player playerB = new Player(movingKeyB);
 	private GridBox[][] grid = new GridBox[29][50];
-	private Color A_color = Color.DARKRED;
+	private Color A_color = Color.RED;
 	private Color A_TrailColor = Color.RED;
-	private Color B_color = Color.DARKBLUE;
+	private Color B_color = Color.BLUE;
 	private Color B_TrailColor = Color.BLUE;
 	
 	public void initialGame() { //TODO : this need to rename to initialGame ???
@@ -72,6 +72,36 @@ public class GameController {
 	public Color getB_TrailColor() {
 		return B_TrailColor;
 	}
+	
+	//Flim Fall added this for getting color name in filepath easier
+	public String getA_stringColor() {
+		if (A_color == Color.RED) {
+			return "Red";
+		} else if (A_color == Color.YELLOW) {
+			return "Yellow";
+		} else if (A_color == Color.GREEN) {
+			return "Green";
+		} else if (A_color == Color.BLUE) {
+			return "Blue";
+		} else {
+			return "Pink";
+		}
+	}
+	
+	public String getB_stringColor() {
+		if (B_color == Color.RED) {
+			return "Red";
+		} else if (B_color == Color.YELLOW) {
+			return "Yellow";
+		} else if (B_color == Color.GREEN) {
+			return "Green";
+		} else if (B_color == Color.BLUE) {
+			return "Blue";
+		} else {
+			return "Pink";
+		}
+	}
+
 
 	public GridBox[][] getGrid() {
 		return grid;
