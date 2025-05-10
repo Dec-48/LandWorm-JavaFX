@@ -207,13 +207,13 @@ public class GameController {
 	
 	//Flim Fall added this for getting color name in filepath easier
 	public String getA_stringColor() {
-		if (A_color == Color.RED) {
+		if ((A_color == Color.RED) || (A_color == Color.DARKRED)) {
 			return "Red";
 		} else if (A_color == Color.YELLOW) {
 			return "Yellow";
 		} else if (A_color == Color.GREEN) {
 			return "Green";
-		} else if (A_color == Color.BLUE) {
+		} else if ((A_color == Color.BLUE) || (A_color == Color.DARKBLUE)) {
 			return "Blue";
 		} else {
 			return "Pink";
@@ -221,13 +221,13 @@ public class GameController {
 	}
 	
 	public String getB_stringColor() {
-		if (B_color == Color.RED) {
+		if ((B_color == Color.RED ) || (B_color == Color.DARKRED)) {
 			return "Red";
 		} else if (B_color == Color.YELLOW) {
 			return "Yellow";
 		} else if (B_color == Color.GREEN) {
 			return "Green";
-		} else if (B_color == Color.BLUE) {
+		} else if ((B_color == Color.BLUE) || (B_color == Color.DARKBLUE)) {
 			return "Blue";
 		} else {
 			return "Pink";
