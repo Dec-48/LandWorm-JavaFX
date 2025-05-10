@@ -1,11 +1,16 @@
 package game.controller;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 import game.object.GridBox;
 import game.object.Player;
+import game.object.PlayerState;
 import game.object.Position;
 import game.object.gridState;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 
 public class GameController {
 	private static GameController instance;
@@ -14,9 +19,9 @@ public class GameController {
 	private Player playerA = new Player(movingKeyA);
 	private Player playerB = new Player(movingKeyB);
 	private GridBox[][] grid = new GridBox[29][50];
-	private Color A_color = Color.RED;
+	private Color A_color = Color.DARKRED;
 	private Color A_TrailColor = Color.RED;
-	private Color B_color = Color.BLUE;
+	private Color B_color = Color.DARKBLUE;
 	private Color B_TrailColor = Color.BLUE;
 	
 	public void initialGame() { //TODO : this need to rename to initialGame ???
@@ -46,10 +51,47 @@ public class GameController {
 		int Acol = playerA.getPosition().col;
 		int Brow = playerB.getPosition().row;
 		int Bcol = playerB.getPosition().col;
+		Boolean isOk = playerA.addCurrentTrail(grid[Arow][Acol]); // false for dead
 		
-		grid[Arow][Acol].paintTrail(A_TrailColor);
-		grid[Brow][Bcol].paintTrail(B_TrailColor);
+		
+		int paintStateA = grid[Arow][Acol].paintTrail(A_TrailColor);
+		if (paintStateA == 0) {
+			if (playerA.getPlayerState() == PlayerState.In) { // get out of SafeZone
+				playerA.setPlayerState(PlayerState.Out);
+//				System.out.println("A: Out");
+				playerA.setPrevInPosition(new Position(Arow, Acol));
+			}
+		} else if (paintStateA == 3) { // move in SafeZone
+			if (playerA.getPlayerState() == PlayerState.Out) { // closed loop
+				playerA.setPlayerState(PlayerState.In);
+				
+				playerA.getCurrentTrail().clear();
+			}
+		}
+		int paintStateB = grid[Brow][Bcol].paintTrail(B_TrailColor);
+		if (paintStateB == 0) {
+			if (playerB.getPlayerState() == PlayerState.In) { // get out of SafeZone
+				playerB.setPlayerState(PlayerState.Out);
+//				System.out.println("B: Out");
+			}
+		} else if (paintStateB == 3) { // move in SafeZone
+			if (playerB.getPlayerState() == PlayerState.Out) { // closed loop
+				playerB.setPlayerState(PlayerState.In);
+//				System.out.println("B: In");
+//				bfs(playerB.getColor());
+			}
+		}
 	}
+	
+	private void bfs(Paint fillColor, Position startPos) {
+		System.out.println("bfs at " + startPos.row + ":" + startPos.col);
+		grid[startPos.row][startPos.col].setColor(Color.BLACK);
+//		Queue<Integer> q = new LinkedList<>();
+//		while (!q.isEmpty()) {
+//			
+//		}
+	}
+	
 
 	public Player getPlayerA() {
 		return playerA;
