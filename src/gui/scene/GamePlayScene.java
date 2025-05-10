@@ -6,6 +6,7 @@ import game.controller.GameCanvas;
 import game.controller.GameController;
 import game.object.GridBox;
 import game.object.Player;
+import input.InputUtility;
 import javafx.animation.AnimationTimer;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
@@ -13,7 +14,7 @@ import sharedObject.RenderableHolder;
 
 public class GamePlayScene extends StackPane implements ChangeableScene{
 	private static GamePlayScene instance;
-	private boolean running = true;
+	private AnimationTimer animation;
 	
 	
 	public GamePlayScene() {
@@ -24,18 +25,16 @@ public class GamePlayScene extends StackPane implements ChangeableScene{
 		GameCanvas gameCanvas = new GameCanvas(1000, 580); 
 		gameCanvas.addListerner();
 	
-		// TAwan Code since here v
 		this.getChildren().add(gameCanvas);
 		gameCanvas.requestFocus(); 
 		
-		GameController gameController = new GameController();
-		gameController.initialGame();
-		GridBox[][] grid = gameController.getGrid();
-		Player playerA = gameController.getPlayerA();
+		GameController.getInstance().initialGame();
 		
-		System.out.println(GameController.getInstance().getA_stringColor());  //File trying this and yes! playerA's color already change from that choosing page bue the gameplay still red and blue.
+		GridBox[][] grid = GameController.getInstance().getGrid();
+		Player playerA = GameController.getInstance().getPlayerA();
+		Player playerB = GameController.getInstance().getPlayerB();
 		
-		Player playerB = gameController.getPlayerB();
+		System.out.println(GameController.getInstance().getA_stringColor());  //Film trying this and yes! playerA's color already change from that choosing page bue the gameplay still red and blue.
 		
 		playerA.setZ(2);
 		playerB.setZ(2); // I have to do this cause the grid will draw over playB blue dot :(
@@ -51,10 +50,10 @@ public class GamePlayScene extends StackPane implements ChangeableScene{
 		RenderableHolder.getInstance().add(playerA);
 		RenderableHolder.getInstance().add(playerB);
 		
-		AnimationTimer animation = new AnimationTimer() {
+		animation = new AnimationTimer() {
 			@Override
 			public void handle(long now) {
-				gameController.update();
+				GameController.getInstance().update();
 				gameCanvas.paintComponent(); 				
 			}
 		};
@@ -65,13 +64,14 @@ public class GamePlayScene extends StackPane implements ChangeableScene{
 		Scene scene = new Scene(this, 1000, 600);
 		sceneManager.getStage().setScene(scene);
 		sceneManager.getStage().show();
-		AudioManager.playBGM("Audio/MainMenuBGM.mp3");
+		AudioManager.playBGM("Audio/GamePlayBGM.mp3");
+		scene.setOnKeyPressed(e -> InputUtility.setKeyPressed(e.getCode(), true));
+        scene.setOnKeyReleased(e -> InputUtility.setKeyPressed(e.getCode(), false));
 	}
 	
 	public void stop(SceneManager sceneManager) {
-		running = false;
 		AudioManager.stopBGM();
-		instance = null;
+		animation.stop();
 	}
 
 	public static GamePlayScene getInstance() {
