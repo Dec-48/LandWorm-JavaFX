@@ -6,7 +6,6 @@ import sharedObject.IRenderable;
 public abstract class GameObject implements IRenderable{
 	protected Position position;
 	protected Paint color;
-	protected gridState state = gridState.Blank;
 	protected int z;
 	
 	public Paint getColor() {
@@ -21,13 +20,6 @@ public abstract class GameObject implements IRenderable{
 	}
 	public void setPosition(Position position) {
 		this.position = position;
-	}
-	
-	public gridState getState() {
-		return state;
-	}
-	public void setState(gridState state) {
-		this.state = state;
 	}
 	
 	public int getZ() {
