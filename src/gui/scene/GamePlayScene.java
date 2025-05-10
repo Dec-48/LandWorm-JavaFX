@@ -71,7 +71,7 @@ public class GamePlayScene extends StackPane implements ChangeableScene{
 	
 	public void stop(SceneManager sceneManager) {
 		AudioManager.stopBGM();
-		animation.stop();
+		animation.stop(); //
 	}
 
 	public static GamePlayScene getInstance() {
