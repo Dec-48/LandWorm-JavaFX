@@ -5,6 +5,7 @@ import javafx.scene.paint.Color;
 
 public class GridBox extends GameObject{
 	private Item item;
+	private gridState state = gridState.Blank;
 	private static Color blankColor = Color.BISQUE;
 	
 	public GridBox(int row, int col) {
@@ -24,10 +25,12 @@ public class GridBox extends GameObject{
 			this.setColor(trailColor);
 			this.state = gridState.Trail;
 		} else {
-			this.setColor(trailColor);
 			if (this.color != trailColor) {
 				this.state = gridState.Trail; 
+			} else {
+				return 3; // move in SafeZone
 			}
+			this.setColor(trailColor);
 		}
 		return 0;
 	}
@@ -38,6 +41,14 @@ public class GridBox extends GameObject{
 	public void setItem(Item item) {
 		this.item = item;
 	}
+	
+	public gridState getState() {
+		return state;
+	}
+	public void setState(gridState state) {
+		this.state = state;
+	}
+
 
 	@Override
 	public void draw(GraphicsContext gc) {

@@ -12,13 +12,14 @@ public class Player extends GameObject{
 	private int speed;
 	private int paintSize;
 	private int frameCount = 0;
+	private PlayerState playerState = PlayerState.In;
 	private String direction; //TODO : could be Enum
 	private Position prevInPosition;
 	private List<GridBox> currentTrail;
 	private ArrayList<KeyCode> movingKey;
 
 	public Player(KeyCode[] movingKey) {
-		this.setSpeed(18);
+		this.setSpeed(10);
 		this.setPaintSize(1);
 		this.setDirection("N");
 		this.setCurrentTrail(new ArrayList<GridBox>());
@@ -111,7 +112,12 @@ public class Player extends GameObject{
 	}
 	
 	public void addCurrentTrail(GridBox gb) {
-		this.currentTrail.add(gb);
+		if (this.currentTrail.contains(gb)) {
+			// do nothing
+		} else {
+//			if (gb.getState() != gridState.SafeZone) 
+				this.currentTrail.add(gb);
+		}
 	}
 	
 	@Override
@@ -125,6 +131,14 @@ public class Player extends GameObject{
 	
 	public void setMovingKey(KeyCode[] movingKey) {
 		this.movingKey = new ArrayList<KeyCode>(List.of(movingKey));
+	}
+
+	public PlayerState getPlayerState() {
+		return playerState;
+	}
+
+	public void setPlayerState(PlayerState playerState) {
+		this.playerState = playerState;
 	}
 
 }
