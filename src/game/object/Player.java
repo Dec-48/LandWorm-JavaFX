@@ -111,12 +111,12 @@ public class Player extends GameObject{
 		this.currentTrail = currentTrail;
 	}
 	
-	public Boolean addCurrentTrail(GridBox gb) {
+	public void addCurrentTrail(GridBox gb) {
 		if (this.currentTrail.contains(gb)) {
-			return false;
+			// do nothing
 		} else {
-			this.currentTrail.add(gb);
-			return true;
+//			if (gb.getState() != gridState.SafeZone) 
+				this.currentTrail.add(gb);
 		}
 	}
 	
