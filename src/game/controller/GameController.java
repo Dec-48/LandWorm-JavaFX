@@ -3,12 +3,9 @@ package game.controller;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import java.util.Set;
-import java.util.SortedSet;
 import java.util.TreeSet;
 
 import game.object.GridBox;
@@ -57,22 +54,21 @@ public class GameController {
 		playerB.move(); // move playerB along the direction from inputUtility
 		int Arow = playerA.getPosition().row;
 		int Acol = playerA.getPosition().col;
+		playerA.addCurrentTrail(grid[Arow][Acol]); 
 		int Brow = playerB.getPosition().row;
 		int Bcol = playerB.getPosition().col;
-		playerA.addCurrentTrail(grid[Arow][Acol]); 
-		
+		playerB.addCurrentTrail(grid[Brow][Bcol]);
 		//TODO: modify this method in order to handle double line trail!!!
 		int paintStateA = grid[Arow][Acol].paintTrail(A_TrailColor); //XXX here!!!
 		if (paintStateA == 0) {
 			if (playerA.getPlayerState() == PlayerState.In) { // get out of SafeZone
 				playerA.setPlayerState(PlayerState.Out);
-//				System.out.println("A: Out");
 			}
 		} else if (paintStateA == 3) { // move in SafeZone
 			if (playerA.getPlayerState() == PlayerState.Out) { // closed loop
 				playerA.setPlayerState(PlayerState.In);
 				for (GridBox gb : playerA.getCurrentTrail()) gb.setState(gridState.SafeZone);
-				ArrayList<Position> spaces = this.fillSpaceA();
+				ArrayList<Position> spaces = this.fillSpace(playerA.getCurrentTrail(), A_TrailColor);
 				for (Position pos : spaces) {
 					grid[pos.row][pos.col].setColor(A_TrailColor);
 					grid[pos.row][pos.col].setState(gridState.SafeZone);
@@ -86,17 +82,22 @@ public class GameController {
 		if (paintStateB == 0) {
 			if (playerB.getPlayerState() == PlayerState.In) { // get out of SafeZone
 				playerB.setPlayerState(PlayerState.Out);
-//				System.out.println("B: Out");
 			}
 		} else if (paintStateB == 3) { // move in SafeZone
 			if (playerB.getPlayerState() == PlayerState.Out) { // closed loop
 				playerB.setPlayerState(PlayerState.In);
-//				System.out.println("B: In");
+				for (GridBox gb : playerB.getCurrentTrail()) gb.setState(gridState.SafeZone);
+				ArrayList<Position> spaces = this.fillSpace(playerB.getCurrentTrail(), B_TrailColor);
+				for (Position pos : spaces) {
+					grid[pos.row][pos.col].setState(gridState.SafeZone);
+					grid[pos.row][pos.col].setColor(B_TrailColor);
+				}
+				playerB.getCurrentTrail().clear();
 			}
 		}
 	}
 
-	private ArrayList<Position> fillSpaceA() {
+	private ArrayList<Position> fillSpace(List<GridBox> currentTrail, Paint trailColor) { //XXX: still have bug when too zig zag path
 		ArrayList<Position> ret = new ArrayList<Position>();
 		Boolean vis[][] = new Boolean[29][50];
 		for (int i = 0; i < 29; i++) {
@@ -106,7 +107,7 @@ public class GameController {
 		}
 		Map<Integer, TreeSet<Integer>> row = new HashMap<Integer, TreeSet<Integer>>();
 		Map<Integer, TreeSet<Integer>> col = new HashMap<Integer, TreeSet<Integer>>();
-		for (GridBox gb : playerA.getCurrentTrail()) {
+		for (GridBox gb : currentTrail) {
 			Integer i = gb.getPosition().row;
 			Integer j = gb.getPosition().col;
 			if (row.containsKey(i)) {
@@ -126,7 +127,7 @@ public class GameController {
 			if (row.get(i).size() > 1) {
 				if (row.get(i).getLast() - row.get(i).getFirst() <= 1) continue;
 				for (int j = row.get(i).getFirst() + 1; j <= row.get(i).getLast() - 1; j++) {
-					if (grid[i][j].getColor() != A_TrailColor) {
+					if (grid[i][j].getColor() != trailColor) {
 						if (!vis[i][j]) {
 							vis[i][j] = true;
 							ret.add(new Position(i, j));
@@ -139,7 +140,7 @@ public class GameController {
 			if (col.get(j).size() > 1) {
 				if (col.get(j).getLast() - col.get(j).getFirst() <= 1) continue;
 				for (int i = col.get(j).getFirst() + 1; i <= col.get(j).getLast() - 1; i++) {
-					if (grid[i][j].getColor() != A_TrailColor) {
+					if (grid[i][j].getColor() != trailColor) {
 						if (!vis[i][j]) {
 							vis[i][j] 	= true;
 							ret.add(new Position(i, j));
@@ -151,6 +152,7 @@ public class GameController {
 		
 		ArrayList<Position> tmp = new ArrayList<Position>();
 		for (Position pos : ret) {
+			if (vis[pos.row][pos.col] || grid[pos.row][pos.col].getState() == gridState.SafeZone) continue;
 			Queue<Position> q = new ArrayDeque<Position>();
 			q.add(pos);
 			while (!q.isEmpty()) {
