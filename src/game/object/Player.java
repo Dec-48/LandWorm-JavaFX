@@ -12,6 +12,7 @@ public class Player extends GameObject{
 	private int speed;
 	private int paintSize;
 	private int frameCount = 0;
+	private int wormCount = 0;
 	private PlayerState playerState = PlayerState.In;
 	private String direction; //TODO : could be Enum
 	private Position prevOutPosition;
@@ -116,18 +117,19 @@ public class Player extends GameObject{
 		if (this.currentTrail.contains(gb)) {
 			// do nothing
 		} else {
-//			if (gb.getState() != gridState.SafeZone) 
+			if (gb.getState() != gridState.SafeZone) 
 				this.currentTrail.add(gb);
 		}
 	}
 	
 	@Override
 	public void draw(GraphicsContext gc) {
-			int row = this.position.row;
-			int col = this.position.col;
-			gc.setFill(this.color);
-			gc.fillOval(col * 20, row * 20, 10, 10);
-		}
+		wormCount++;
+		int row = this.position.row;
+		int col = this.position.col;
+		gc.setFill(this.color);
+		gc.fillOval(col * 20, row * 20, 10, 10);
+	}
 	
 	public void setMovingKey(KeyCode[] movingKey) {
 		this.movingKey = new ArrayList<KeyCode>(List.of(movingKey));
