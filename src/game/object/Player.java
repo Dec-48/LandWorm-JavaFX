@@ -164,8 +164,8 @@ public class Player extends GameObject {
 	
 	@Override
 	public void draw(GraphicsContext gc) {
-		if (wormCount == 16) wormCount = 0;
-		int idx = wormCount / 4;
+		if (wormCount == 60) wormCount = 0;
+		int idx = wormCount / 15;
 		boolean flip = (this.direction == "DOWN" || this.direction == "LEFT");
 		int offset = (40-20)/2;
 		if (this.direction == "UP" || this.direction == "DOWN") {
