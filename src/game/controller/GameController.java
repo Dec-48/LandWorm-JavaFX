@@ -1,7 +1,8 @@
-package game.controller;
+	package game.controller;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -85,6 +86,7 @@ public class GameController {
 		if (paintStateA == 0) {
 			if (playerA.getPlayerState() == PlayerState.In) { // get out of SafeZone
 				playerA.setPlayerState(PlayerState.Out);
+				playerA.setprevOutPosition(new Position(Arow, Acol));
 			}
 		} else if (paintStateA == 3) { // move in SafeZone
 			if (playerA.getPlayerState() == PlayerState.Out) { // closed loop
@@ -97,6 +99,21 @@ public class GameController {
 				}
 				playerA.getCurrentTrail().clear();
 			}
+		} else if (paintStateA == 1) {
+			if (playerA.getCurrentTrail().getLast() != grid[Arow][Acol]) { // kill itself ??				
+				for (GridBox gb : playerA.getCurrentTrail()) {
+					if (gb.getState() == gridState.Trail) {
+						gb.setColor(GridBox.blankColor);
+						gb.setState(gridState.Blank);						
+					}
+				}
+				int row = playerA.getprevOutPosition().row;
+				int col = playerA.getprevOutPosition().col;
+				playerA.setPosition(new Position(row, col));
+				grid[row][col].setState(gridState.SafeZone);
+//				playerA.setPosition(playerA.getprevOutPosition()); //XXX: fuck undefied behavior!!!!
+				playerA.getCurrentTrail().clear();
+			}
 		}
 		
 		
@@ -104,6 +121,7 @@ public class GameController {
 		if (paintStateB == 0) {
 			if (playerB.getPlayerState() == PlayerState.In) { // get out of SafeZone
 				playerB.setPlayerState(PlayerState.Out);
+				playerB.setprevOutPosition(new Position(Brow, Bcol));
 			}
 		} else if (paintStateB == 3) { // move in SafeZone
 			if (playerB.getPlayerState() == PlayerState.Out) { // closed loop
@@ -113,7 +131,21 @@ public class GameController {
 				for (Position pos : spaces) {
 					grid[pos.row][pos.col].setState(gridState.SafeZone);
 					grid[pos.row][pos.col].setColor(b_TrailColor);
-				}
+				}	
+				playerB.getCurrentTrail().clear();
+			}
+		} else if (paintStateB == 1) {
+			if (playerB.getCurrentTrail().getLast() != grid[Brow][Bcol]) { // kill itself
+				for (GridBox gb : playerB.getCurrentTrail()) {
+					if (gb.getState() == gridState.Trail) {
+						gb.setColor(GridBox.blankColor);
+						gb.setState(gridState.Blank);						
+					}
+				}				
+				int row = playerB.getprevOutPosition().row;
+				int col = playerB.getprevOutPosition().col;
+				grid[row][col].setState(gridState.SafeZone);
+				playerB.setPosition(new Position(row, col));
 				playerB.getCurrentTrail().clear();
 			}
 		}
@@ -127,32 +159,62 @@ public class GameController {
 				vis[i][j] = false;
 			}
 		}
-		Map<Integer, TreeSet<Integer>> row = new HashMap<Integer, TreeSet<Integer>>();
-		Map<Integer, TreeSet<Integer>> col = new HashMap<Integer, TreeSet<Integer>>();
+//		Map<Integer, TreeSet<Integer>> row = new HashMap<Integer, TreeSet<Integer>>();
+//		Map<Integer, TreeSet<Integer>> col = new HashMap<Integer, TreeSet<Integer>>();
+		Map<Integer, ArrayList<Integer>> row = new HashMap<Integer, ArrayList<Integer>>();
+		Map<Integer, ArrayList<Integer>> col = new HashMap<Integer, ArrayList<Integer>>();
 		for (GridBox gb : currentTrail) {
 			Integer i = gb.getPosition().row;
 			Integer j = gb.getPosition().col;
 			if (row.containsKey(i)) {
 				row.get(i).add(j);
 			} else {
-				TreeSet<Integer> s = new TreeSet<Integer>(); s.add(j);
+//				TreeSet<Integer> s = new TreeSet<Integer>(); s.add(j);
+				ArrayList<Integer> s = new ArrayList<Integer>(); s.add(j);
 				row.put(i, s);
 			}
 			if (col.containsKey(j)) {
 				col.get(j).add(i);
 			} else {
-				TreeSet<Integer> s = new TreeSet<Integer>(); s.add(i);
+//				TreeSet<Integer> s = new TreeSet<Integer>(); s.add(i);
+				ArrayList<Integer> s = new ArrayList<Integer>(); s.add(i);
 				col.put(j, s);
 			}
 		}
 		for (Integer i : row.keySet()) {
 			if (row.get(i).size() > 1) {
-				if (row.get(i).getLast() - row.get(i).getFirst() <= 1) continue;
-				for (int j = row.get(i).getFirst() + 1; j <= row.get(i).getLast() - 1; j++) {
-					if (grid[i][j].getColor() != trailColor) {
-						if (!vis[i][j]) {
-							vis[i][j] = true;
-							ret.add(new Position(i, j));
+//				if (row.get(i).getLast() - row.get(i).getFirst() <= 1) continue;
+//				for (int j = row.get(i).getFirst() + 1; j <= row.get(i).getLast() - 1; j++) {
+//					if (grid[i][j].getColor() != trailColor) {
+//						if (!vis[i][j]) {
+//							vis[i][j] = true;
+//							ret.add(new Position(i, j));
+//						}
+//					}
+//				}
+				Integer[] copy = row.get(i).toArray(new Integer[0]);
+		        Arrays.sort(copy);
+				ArrayList<Integer> tmp = new ArrayList<Integer>();
+				tmp.add(copy[0]);
+				for (int idx = 1; idx < copy.length; idx++) {
+					if (copy[idx] - copy[idx - 1] == 1) {
+						if (copy[idx - 1] == tmp.getLast()) {
+							tmp.add(copy[idx]);
+						} else {							
+							tmp.set(tmp.size() - 1, copy[idx]);
+						}
+					} else {
+						tmp.add(copy[idx]);
+					}
+				}
+				for (int idx = 0; idx < tmp.size() - 1; idx += 2) {
+					int sJ = tmp.get(idx); int eJ = tmp.get(idx + 1);
+					for (int j = sJ; j <= eJ; j++) {
+						if (grid[i][j].getColor() != trailColor) {
+							if (!vis[i][j]) {
+								vis[i][j] 	= true;
+								ret.add(new Position(i, j));
+							}
 						}
 					}
 				}
@@ -160,12 +222,39 @@ public class GameController {
 		}
 		for (Integer j : col.keySet()) {
 			if (col.get(j).size() > 1) {
-				if (col.get(j).getLast() - col.get(j).getFirst() <= 1) continue;
-				for (int i = col.get(j).getFirst() + 1; i <= col.get(j).getLast() - 1; i++) {
-					if (grid[i][j].getColor() != trailColor) {
-						if (!vis[i][j]) {
-							vis[i][j] 	= true;
-							ret.add(new Position(i, j));
+//				if (col.get(j).getLast() - col.get(j).getFirst() <= 1) continue;
+//				for (int i = col.get(j).getFirst() + 1; i <= col.get(j).getLast() - 1; i++) {
+//					if (grid[i][j].getColor() != trailColor) {
+//						if (!vis[i][j]) {
+//							vis[i][j] 	= true;
+//							ret.add(new Position(i, j));
+//						}
+//					}
+//				}
+				
+				Integer[] copy = col.get(j).toArray(new Integer[0]);
+		        Arrays.sort(copy);
+				ArrayList<Integer> tmp = new ArrayList<Integer>();
+				tmp.add(copy[0]);
+				for (int idx = 1; idx < copy.length; idx++) {
+					if (copy[idx] - copy[idx - 1] == 1) {
+						if (copy[idx - 1] == tmp.getLast()) {
+							tmp.add(copy[idx]);
+						} else {							
+							tmp.set(tmp.size() - 1, copy[idx]);
+						}
+					} else {
+						tmp.add(copy[idx]);
+					}
+				}
+				for (int idx = 0; idx < tmp.size() - 1; idx += 2) {
+					int sI = tmp.get(idx); int eI = tmp.get(idx + 1);
+					for (int i = sI; i <= eI; i++) {
+						if (grid[i][j].getColor() != trailColor) {
+							if (!vis[i][j]) {
+								vis[i][j] 	= true;
+								ret.add(new Position(i, j));
+							}
 						}
 					}
 				}
@@ -174,7 +263,8 @@ public class GameController {
 		
 		ArrayList<Position> tmp = new ArrayList<Position>();
 		for (Position pos : ret) {
-			if (vis[pos.row][pos.col] || grid[pos.row][pos.col].getState() == gridState.SafeZone) continue;
+//			if (vis[pos.row][pos.col] || grid[pos.row][pos.col].getState() == gridState.SafeZone) continue;
+			if (grid[pos.row][pos.col].getState() == gridState.SafeZone) continue;
 			Queue<Position> q = new ArrayDeque<Position>();
 			q.add(pos);
 			while (!q.isEmpty()) {
@@ -184,7 +274,7 @@ public class GameController {
 					int newRow = cur.row + d; int newCol = cur.col + d;
 					Position newPos;
 					if (0 <= newRow && newRow < 29) {
-						if (!vis[newRow][cur.col] && grid[newRow][cur.col].getColor() != a_TrailColor) {
+						if (!vis[newRow][cur.col] && grid[newRow][cur.col].getColor() != trailColor) {
 							newPos = new Position(newRow, cur.col); 
 							vis[newRow][cur.col] = true;
 							tmp.add(newPos);
@@ -192,7 +282,7 @@ public class GameController {
 						}
 					}
 					if (0 <= newCol && newCol < 50) {
-						if (!vis[cur.row][newCol] && grid[cur.row][newCol].getColor() != a_TrailColor) {
+						if (!vis[cur.row][newCol] && grid[cur.row][newCol].getColor() != trailColor) {
 							newPos = new Position(cur.row, newCol);
 							vis[cur.row][newCol] = true;
 							tmp.add(newPos);
