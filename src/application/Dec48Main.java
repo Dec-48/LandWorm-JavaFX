@@ -21,7 +21,7 @@ public class Dec48Main extends Application{
 		primaryStage.setScene(scene);
 		primaryStage.setTitle("LandWorm");
 
-		GameCanvas gameCanvas = new GameCanvas(1000, 580); 
+		GameCanvas gameCanvas = new GameCanvas(1000, 600); 
 		gameCanvas.addListerner();
 	
 		root.getChildren().add(gameCanvas);

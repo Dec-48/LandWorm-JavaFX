@@ -21,7 +21,6 @@ public class RenderableHolder {
 		};
 	}
 	
-	//******** Now we only have grid and 2players 
 	public void add(IRenderable entity) {
 		entities.add(entity);
 		Collections.sort(entities, comparator);

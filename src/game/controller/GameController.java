@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.TreeSet;
 
+import game.object.GameplayBackground;
 import game.object.GridBox;
 import game.object.Player;
 import game.object.PlayerState;
@@ -16,6 +17,7 @@ import game.object.gridState;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import sharedObject.RenderableHolder;
 
 public class GameController {
 	private static GameController instance;
@@ -24,14 +26,41 @@ public class GameController {
 	private Player playerA = new Player(movingKeyA);
 	private Player playerB = new Player(movingKeyB);
 	private GridBox[][] grid = new GridBox[29][50];
-	private Color A_color = Color.DARKRED;
-	private Color A_TrailColor = Color.RED;
-	private Color B_color = Color.DARKBLUE;
-	private Color B_TrailColor = Color.BLUE;
+	private Color a_color = Color.DARKRED;
+	private Color a_TrailColor = Color.RED;
+	private Color b_color = Color.DARKBLUE;
+	private Color b_TrailColor = Color.BLUE;
+	private GameplayBackground background;
 	
 	public void initialGame() { //TODO : this need to rename to initialGame ???
-		playerA.setColor(A_color);
-		playerB.setColor(B_color);
+		playerA.setColor(a_color);
+		a_TrailColor = a_TrailColor.deriveColor(0, 1, 1, 0.3);
+		playerB.setColor(b_color);
+		b_TrailColor = b_TrailColor.deriveColor(0, 1, 1, 0.3);
+		
+		background = new GameplayBackground();
+		GridBox[][] grid = GameController.getInstance().getGrid();
+		Player playerA = GameController.getInstance().getPlayerA();
+		Player playerB = GameController.getInstance().getPlayerB();
+		
+		background.setZ(0);
+		RenderableHolder.getInstance().add(background);
+		
+		for (GridBox[] i : grid) {
+			for (GridBox j : i) {
+				j.setZ(1);
+				RenderableHolder.getInstance().add(j);
+			}
+		}
+		
+		playerA.setZ(2);
+		playerB.setZ(2); 
+		
+		RenderableHolder.getInstance().add(playerA);
+		RenderableHolder.getInstance().add(playerB);
+		
+		RenderableHolder.getInstance().getEntities().sort(null);
+///////////////////////
 		for (int i = 0; i < 29; i++) {
 			for (int j = 0; j < 50; j++) {
 				grid[i][j] = new GridBox(i, j);
@@ -41,9 +70,9 @@ public class GameController {
 		playerB.setPosition(new Position(14, 37));
 		for (int di = -1; di <= 1; di++) {
 			for (int dj = -1; dj <= 1; dj++) {
-				grid[14 + di][12 + dj].setColor(A_TrailColor);
+				grid[14 + di][12 + dj].setColor(a_TrailColor);
 				grid[14 + di][12 + dj].setState(gridState.SafeZone);
-				grid[14 + di][37 + dj].setColor(B_TrailColor);
+				grid[14 + di][37 + dj].setColor(b_TrailColor);
 				grid[14 + di][37 + dj].setState(gridState.SafeZone);
 			}
 		}
@@ -59,7 +88,7 @@ public class GameController {
 		int Bcol = playerB.getPosition().col;
 		playerB.addCurrentTrail(grid[Brow][Bcol]);
 		//TODO: modify this method in order to handle double line trail!!!
-		int paintStateA = grid[Arow][Acol].paintTrail(A_TrailColor); //XXX here!!!
+		int paintStateA = grid[Arow][Acol].paintTrail(a_TrailColor); //XXX here!!!
 		if (paintStateA == 0) {
 			if (playerA.getPlayerState() == PlayerState.In) { // get out of SafeZone
 				playerA.setPlayerState(PlayerState.Out);
@@ -68,9 +97,9 @@ public class GameController {
 			if (playerA.getPlayerState() == PlayerState.Out) { // closed loop
 				playerA.setPlayerState(PlayerState.In);
 				for (GridBox gb : playerA.getCurrentTrail()) gb.setState(gridState.SafeZone);
-				ArrayList<Position> spaces = this.fillSpace(playerA.getCurrentTrail(), A_TrailColor);
+				ArrayList<Position> spaces = this.fillSpace(playerA.getCurrentTrail(), a_TrailColor);
 				for (Position pos : spaces) {
-					grid[pos.row][pos.col].setColor(A_TrailColor);
+					grid[pos.row][pos.col].setColor(a_TrailColor);
 					grid[pos.row][pos.col].setState(gridState.SafeZone);
 				}
 				playerA.getCurrentTrail().clear();
@@ -78,7 +107,7 @@ public class GameController {
 		}
 		
 		
-		int paintStateB = grid[Brow][Bcol].paintTrail(B_TrailColor);
+		int paintStateB = grid[Brow][Bcol].paintTrail(b_TrailColor);
 		if (paintStateB == 0) {
 			if (playerB.getPlayerState() == PlayerState.In) { // get out of SafeZone
 				playerB.setPlayerState(PlayerState.Out);
@@ -87,10 +116,10 @@ public class GameController {
 			if (playerB.getPlayerState() == PlayerState.Out) { // closed loop
 				playerB.setPlayerState(PlayerState.In);
 				for (GridBox gb : playerB.getCurrentTrail()) gb.setState(gridState.SafeZone);
-				ArrayList<Position> spaces = this.fillSpace(playerB.getCurrentTrail(), B_TrailColor);
+				ArrayList<Position> spaces = this.fillSpace(playerB.getCurrentTrail(), b_TrailColor);
 				for (Position pos : spaces) {
 					grid[pos.row][pos.col].setState(gridState.SafeZone);
-					grid[pos.row][pos.col].setColor(B_TrailColor);
+					grid[pos.row][pos.col].setColor(b_TrailColor);
 				}
 				playerB.getCurrentTrail().clear();
 			}
@@ -162,7 +191,7 @@ public class GameController {
 					int newRow = cur.row + d; int newCol = cur.col + d;
 					Position newPos;
 					if (0 <= newRow && newRow < 29) {
-						if (!vis[newRow][cur.col] && grid[newRow][cur.col].getColor() != A_TrailColor) {
+						if (!vis[newRow][cur.col] && grid[newRow][cur.col].getColor() != a_TrailColor) {
 							newPos = new Position(newRow, cur.col); 
 							vis[newRow][cur.col] = true;
 							tmp.add(newPos);
@@ -170,7 +199,7 @@ public class GameController {
 						}
 					}
 					if (0 <= newCol && newCol < 50) {
-						if (!vis[cur.row][newCol] && grid[cur.row][newCol].getColor() != A_TrailColor) {
+						if (!vis[cur.row][newCol] && grid[cur.row][newCol].getColor() != a_TrailColor) {
 							newPos = new Position(cur.row, newCol);
 							vis[cur.row][newCol] = true;
 							tmp.add(newPos);
@@ -194,28 +223,28 @@ public class GameController {
 	}
 
 	public Color getA_color() {
-		return A_color;
+		return a_color;
 	}
 	public Color getA_TrailColor() {
-		return A_TrailColor;
+		return a_TrailColor;
 	}
 
 	public Color getB_color() {
-		return B_color;
+		return b_color;
 	}
 	public Color getB_TrailColor() {
-		return B_TrailColor;
+		return b_TrailColor;
 	}
 	
 	//Flim Fall added this for getting color name in filepath easier
 	public String getA_stringColor() {
-		if ((A_color == Color.RED) || (A_color == Color.DARKRED)) {
+		if ((a_color == Color.RED) || (a_color == Color.DARKRED)) {
 			return "Red";
-		} else if (A_color == Color.YELLOW) {
+		} else if (a_color == Color.YELLOW) {
 			return "Yellow";
-		} else if (A_color == Color.GREEN) {
+		} else if (a_color == Color.GREEN) {
 			return "Green";
-		} else if ((A_color == Color.BLUE) || (A_color == Color.DARKBLUE)) {
+		} else if ((a_color == Color.BLUE) || (a_color == Color.DARKBLUE)) {
 			return "Blue";
 		} else {
 			return "Pink";
@@ -223,13 +252,13 @@ public class GameController {
 	}
 	
 	public String getB_stringColor() {
-		if ((B_color == Color.RED ) || (B_color == Color.DARKRED)) {
+		if ((b_color == Color.RED ) || (b_color == Color.DARKRED)) {
 			return "Red";
-		} else if (B_color == Color.YELLOW) {
+		} else if (b_color == Color.YELLOW) {
 			return "Yellow";
-		} else if (B_color == Color.GREEN) {
+		} else if (b_color == Color.GREEN) {
 			return "Green";
-		} else if ((B_color == Color.BLUE) || (B_color == Color.DARKBLUE)) {
+		} else if ((b_color == Color.BLUE) || (b_color == Color.DARKBLUE)) {
 			return "Blue";
 		} else {
 			return "Pink";
@@ -242,13 +271,13 @@ public class GameController {
 	}
 	
 	public void setPlayerAcolors(Color playerColor, Color trailColor) {
-		this.A_color = playerColor;
-		this.A_TrailColor = trailColor;
+		this.a_color = playerColor;
+		this.a_TrailColor = trailColor.deriveColor(0, 1, 1, 0.3);;
 	}
 	
 	public void setPlayerBcolors(Color playerColor, Color trailColor) {
-		this.B_color = playerColor;
-		this.B_TrailColor = trailColor;
+		this.b_color = playerColor;
+		this.b_TrailColor = trailColor.deriveColor(0, 1, 1, 0.3);;
 	}
 	
 	public static GameController getInstance() {
