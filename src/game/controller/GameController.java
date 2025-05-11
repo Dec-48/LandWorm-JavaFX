@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.TreeSet;
+import java.util.concurrent.ThreadLocalRandom;
 
 import game.object.GameplayBackground;
 import game.object.GridBox;
@@ -15,6 +16,7 @@ import game.object.Player;
 import game.object.PlayerState;
 import game.object.Position;
 import game.object.gridState;
+import game.object.Items.SpeedPotion;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -26,7 +28,10 @@ public class GameController {
 	private KeyCode[] movingKeyB = {KeyCode.UP, KeyCode.LEFT, KeyCode.DOWN, KeyCode.RIGHT};
 	private Player playerA = new Player(movingKeyA);
 	private Player playerB = new Player(movingKeyB);
+	private SpeedPotion[] speedPotions = new SpeedPotion[4];
 	private GridBox[][] grid = new GridBox[29][50];
+	private int frameCount = 0;
+	private int maxPotion = 4;
 	private Color a_color = Color.DARKRED;
 	private Color a_TrailColor = Color.RED;
 	private Color b_color = Color.DARKBLUE;
@@ -66,13 +71,34 @@ public class GameController {
 		
 		playerA.setZ(3);
 		playerB.setZ(3); 
-		
+
 		RenderableHolder.getInstance().add(playerA);
 		RenderableHolder.getInstance().add(playerB);
+		
+		ArrayList<Position> poss = new ArrayList<Position>();
+		for (int i = 0; i < 4;) {
+		    int rowRand = ThreadLocalRandom.current().nextInt(1, 29); // [1, 29)
+		    int colRand = ThreadLocalRandom.current().nextInt(1, 50); // [1, 50)
+		    Position newPos = new Position(rowRand, colRand);
+		    if (!poss.contains(newPos)) {
+		    	i++;
+		    	poss.add(newPos);
+		    }
+		}
+		int idx = 0;
+		for (Position pos : poss) {
+			speedPotions[idx] = new SpeedPotion(pos);
+			speedPotions[idx].setVisible(false);
+			idx++;
+		}
 ///////////////////////
 	}
 	
 	public void update() {
+		frameCount++;
+		if (frameCount % 100000 == 0) {
+			
+		}
 		playerA.move(); // move playerA along the direction from inputUtility
 		playerB.move(); // move playerB along the direction from inputUtility
 		int Arow = playerA.getPosition().row;
@@ -196,21 +222,17 @@ public class GameController {
 		        Arrays.sort(copy);
 				ArrayList<Integer> tmp = new ArrayList<Integer>();
 				tmp.add(copy[0]);
-				for (int idx = 1; idx < copy.length; idx++) {
-					if (copy[idx] - copy[idx - 1] == 1) {
-						if (copy[idx - 1] == tmp.getLast()) {
-							tmp.add(copy[idx]);
-						} else {							
-							tmp.set(tmp.size() - 1, copy[idx]);
-						}
+				for (int idx = 1; idx < copy.length - 1; idx++) {
+					if (copy[idx + 1] - copy[idx] == 1) {
 					} else {
 						tmp.add(copy[idx]);
 					}
 				}
+				tmp.add(copy[copy.length - 1]);
 				for (int idx = 0; idx < tmp.size() - 1; idx += 2) {
 					int sJ = tmp.get(idx); int eJ = tmp.get(idx + 1);
 					for (int j = sJ; j <= eJ; j++) {
-						if (grid[i][j].getColor() != trailColor) {
+						if (grid[i][j].getColor() != trailColor && grid[i][j].getState() != gridState.SafeZone) {
 							if (!vis[i][j]) {
 								vis[i][j] 	= true;
 								ret.add(new Position(i, j));
@@ -231,26 +253,21 @@ public class GameController {
 //						}
 //					}
 //				}
-				
 				Integer[] copy = col.get(j).toArray(new Integer[0]);
 		        Arrays.sort(copy);
 				ArrayList<Integer> tmp = new ArrayList<Integer>();
-				tmp.add(copy[0]);
-				for (int idx = 1; idx < copy.length; idx++) {
-					if (copy[idx] - copy[idx - 1] == 1) {
-						if (copy[idx - 1] == tmp.getLast()) {
-							tmp.add(copy[idx]);
-						} else {							
-							tmp.set(tmp.size() - 1, copy[idx]);
-						}
+				tmp.add(copy[0]);	
+				for (int idx = 1; idx < copy.length - 1; idx++) {
+					if (copy[idx + 1] - copy[idx] == 1) {
 					} else {
 						tmp.add(copy[idx]);
 					}
 				}
+				tmp.add(copy[copy.length - 1]);
 				for (int idx = 0; idx < tmp.size() - 1; idx += 2) {
 					int sI = tmp.get(idx); int eI = tmp.get(idx + 1);
 					for (int i = sI; i <= eI; i++) {
-						if (grid[i][j].getColor() != trailColor) {
+						if (grid[i][j].getColor() != trailColor && grid[i][j].getState() != gridState.SafeZone) {
 							if (!vis[i][j]) {
 								vis[i][j] 	= true;
 								ret.add(new Position(i, j));
@@ -262,14 +279,60 @@ public class GameController {
 		}
 		
 		ArrayList<Position> tmp = new ArrayList<Position>();
+		Integer canditRow = null;
+		Integer canditCol = null;
+		int angleCount = 0;
+		for (GridBox gb : currentTrail) {
+			int dirFlag[][] = new int[3][3]; for (int i = 0; i < 3; i++) for (int j = 0; j < 3; j++) dirFlag[i][j] = 0;
+			int curRow = gb.getPosition().row;
+			int curCol = gb.getPosition().col;
+			vis[curRow][curCol] = true;
+			for (int d = -1; d <= 1; d += 2) {
+				int nowRow = curRow + d;
+				int nowCol = curCol + d;
+				if (0 <= nowRow && nowRow < 29) {
+					if (grid[nowRow][curCol].getColor() == trailColor) {
+						dirFlag[1 + d][0] += 1;
+						dirFlag[1 + d][1] += 1;
+						dirFlag[1 + d][2] += 1;
+					}
+				}
+				if (0 <= nowCol && nowCol < 50) {
+					if (grid[curRow][nowCol].getColor() == trailColor) {
+						dirFlag[0][1 + d] += 1;
+						dirFlag[1][1 + d] += 1;
+						dirFlag[2][1 + d] += 1;
+					}
+				}
+			}
+			for (int di = -1; di <= 1; di += 2) {
+				for (int dj = -1; dj <= 1; dj += 2) {
+					if (dirFlag[1 + di][1 + dj] == 2) {
+						angleCount++;
+						canditRow = curRow + di;
+						canditCol = curCol + dj;
+					}
+				}
+			}
+		}
+		if (angleCount == 1) {
+			if (canditRow != null && canditCol != null) {
+				Position toAdd = new Position(canditRow, canditCol);
+				if (!ret.contains(toAdd)) {
+					ret.add(toAdd);
+				}
+			}
+		}
 		for (Position pos : ret) {
 //			if (vis[pos.row][pos.col] || grid[pos.row][pos.col].getState() == gridState.SafeZone) continue;
-			if (grid[pos.row][pos.col].getState() == gridState.SafeZone) continue;
+			if (grid[pos.row][pos.col].getState() == gridState.SafeZone
+				&& grid[pos.row][pos.col].getColor() == trailColor) continue;
 			Queue<Position> q = new ArrayDeque<Position>();
 			q.add(pos);
 			while (!q.isEmpty()) {
 				Position cur = q.remove();
-				if (grid[cur.row][cur.col].getState() == gridState.SafeZone) continue;
+				if (grid[cur.row][cur.col].getState() == gridState.SafeZone
+					&& grid[cur.row][cur.col].getColor() == trailColor) continue;
 				for (int d = -1; d <= 1; d += 2) {
 					int newRow = cur.row + d; int newCol = cur.col + d;
 					Position newPos;
@@ -368,5 +431,13 @@ public class GameController {
 			instance = new GameController();
 		}
 		return instance;
+	}
+
+	public SpeedPotion[] getSpeedPotions() {
+		return speedPotions;
+	}
+
+	public void setSpeedPotions(SpeedPotion[] speedPotions) {
+		this.speedPotions = speedPotions;
 	}
 }

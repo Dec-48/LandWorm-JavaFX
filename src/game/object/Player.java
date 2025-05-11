@@ -12,6 +12,7 @@ import javafx.scene.paint.Paint;
 
 public class Player extends GameObject {
 	private int speed;
+	private int speedDuration = 0;
 	private int paintSize;
 	private int frameCount = 0;
 	private int wormCount = 0; //
