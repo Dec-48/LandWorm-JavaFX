@@ -53,9 +53,11 @@ public class GridBox extends GameObject {
 
 	@Override
 	public void draw(GraphicsContext gc) {
-		int row = this.getPosition().row;
-		int col = this.getPosition().col;
-		gc.setFill(this.color);
-		gc.fillRoundRect(col * 20, row * 20, 20, 20, 3, 3);
+		if (this.color != Color.BISQUE) {
+			int row = this.getPosition().row;
+			int col = this.getPosition().col;
+			gc.setFill(this.color);
+			gc.fillRoundRect(col * 20, row * 20, 20, 20, 3, 3);
+		}
 	}
 }
