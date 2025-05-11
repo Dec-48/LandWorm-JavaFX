@@ -8,6 +8,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 
 public class Player extends GameObject {
 	private int speed;
@@ -19,6 +20,7 @@ public class Player extends GameObject {
 	private Position prevOutPosition;
 	private List<GridBox> currentTrail;
 	private ArrayList<KeyCode> movingKey;
+
 
 	public Player(KeyCode[] movingKey) {
 		this.setSpeed(10);
@@ -132,10 +134,13 @@ public class Player extends GameObject {
 				this.currentTrail.add(gb);
 		}
 	}
-
+	
+	private Image[] vertWorm = new Image[4];
+	private Image[] horiWorm = new Image[4];
+	
 	@Override
-	public void draw(GraphicsContext gc) {
-		wormCount++;
+	public void setColor(Paint color) {
+		super.setColor(color);
 		String stringColor;
 		if ((this.getColor() == Color.RED) || (this.getColor() == Color.DARKRED)) {
 			stringColor = "Red";
@@ -148,67 +153,30 @@ public class Player extends GameObject {
 		} else {
 			stringColor = "Pink";
 		}
-
-		if (this.getDirection() == "UP" || this.getDirection() == "DOWN") {
-			direction = "V";
+		String imagePath = "Image/" + stringColor + "worm/" + stringColor + "worm";
+		for (int i = 1; i <= 3; i++) {
+			this.vertWorm[i - 1] = new Image(ClassLoader.getSystemResource(imagePath + "V" + i + ".PNG").toString());
+			this.horiWorm[i - 1] = new Image(ClassLoader.getSystemResource(imagePath + "H" + i + ".PNG").toString());
+		}
+		this.vertWorm[3] = this.vertWorm[1];
+		this.horiWorm[3] = this.horiWorm[1];
+	}
+	
+	@Override
+	public void draw(GraphicsContext gc) {
+		if (wormCount == 60) wormCount = 0;
+		int idx = wormCount / 15;
+		boolean flip = (this.direction == "DOWN" || this.direction == "LEFT");
+		if (this.direction == "UP" || this.direction == "DOWN") {
+			int row = this.position.row, col = this.position.col;
+			if (!flip) gc.drawImage(vertWorm[idx], col * 20, row * 20, 20, 20);
+			else gc.drawImage(vertWorm[idx], col * 20, row * 20 + 20, 20, -20);
 		} else {
-			direction = "H";
+			int row = this.position.row, col = this.position.col;
+			if (!flip) gc.drawImage(horiWorm[idx], col * 20, row * 20, 20, 20);
+			else gc.drawImage(horiWorm[idx], col * 20 + 20, row * 20, -20, 20);
 		}
-
-		String Imagepath = "Image/" + stringColor + "worm/" + stringColor + "worm" + direction;
-
-		if (wormCount == 1) {
-			// gc.clearRect(this.getPosition().col * 20, this.getPosition().row * 20, 20,
-			// 20);
-			Image Image1 = new Image(ClassLoader.getSystemResource(Imagepath + "1.png").toString());
-			if (direction == "UP" || direction == "RIGHT") {
-				gc.drawImage(Image1, this.getPosition().col * 20, this.getPosition().row * 20, 20, 20);
-			} else if (direction == "LEFT") {
-				gc.drawImage(Image1, this.getPosition().col * 20 + 20, this.getPosition().row * 20, -20, 20);
-			} else {
-				gc.drawImage(Image1, this.getPosition().col * 20, this.getPosition().row * 20 + 20, 20, -20);
-			}
-		} else if (wormCount == 11) {
-			// gc.clearRect(this.getPosition().col * 20, this.getPosition().row * 20, 20,
-			// 20);
-			Image Image2 = new Image(ClassLoader.getSystemResource(Imagepath + "2.png").toString());
-			if (direction == "UP" || direction == "RIGHT") {
-				gc.drawImage(Image2, this.getPosition().col * 20, this.getPosition().row * 20, 20, 20);
-			} else if (direction == "LEFT") {
-				gc.drawImage(Image2, this.getPosition().col * 20 + 20, this.getPosition().row * 20, -20, 20);
-			} else {
-				gc.drawImage(Image2, this.getPosition().col * 20, this.getPosition().row * 20 + 20, 20, -20);
-			}
-		} else if (wormCount == 16) {
-			// gc.clearRect(this.getPosition().col * 20, this.getPosition().row * 20, 20,
-			// 20);
-			Image Image3 = new Image(ClassLoader.getSystemResource(Imagepath + "3.png").toString());
-			if (direction == "UP" || direction == "RIGHT") {
-				gc.drawImage(Image3, this.getPosition().col * 20, this.getPosition().row * 20, 20, 20);
-			} else if (direction == "LEFT") {
-				gc.drawImage(Image3, this.getPosition().col * 20 + 20, this.getPosition().row * 20, -20, 20);
-			} else {
-				gc.drawImage(Image3, this.getPosition().col * 20, this.getPosition().row * 20 + 20, 20, -20);
-			}
-		} else if (wormCount == 21) {
-			// gc.clearRect(this.getPosition().col * 20, this.getPosition().row * 20, 20,
-			// 20);
-			Image Image2 = new Image(ClassLoader.getSystemResource(Imagepath + "2.png").toString());
-			if (direction == "UP" || direction == "RIGHT") {
-				gc.drawImage(Image2, this.getPosition().col * 20, this.getPosition().row * 20, 20, 20);
-			} else if (direction == "LEFT") {
-				gc.drawImage(Image2, this.getPosition().col * 20 + 20, this.getPosition().row * 20, -20, 20);
-			} else {
-				gc.drawImage(Image2, this.getPosition().col * 20, this.getPosition().row * 20 + 20, 20, -20);
-			}
-		} else if (wormCount == 26) {
-			wormCount = 0;
-		}
-
-		// int row = this.getPosition().row;
-		// int col = this.getPosition().col;
-		// gc.setFill(this.color);
-		// gc.fillRoundRect(col * 20, row * 20, 20, 20, 3, 3);
+		wormCount++;
 	}
 
 	public void setMovingKey(KeyCode[] movingKey) {
