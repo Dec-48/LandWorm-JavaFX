@@ -81,37 +81,38 @@ public class GameController {
 		sp.setZ(3);
 		speedPotions.add(sp);
 		RenderableHolder.getInstance().add(sp);
-//		ArrayList<Position> poss = new ArrayList<Position>();
-//		for (int i = 0; i < 4;) {
-//			int rowRand = ThreadLocalRandom.current().nextInt(1, 29); // [1, 29)
-//			int colRand = ThreadLocalRandom.current().nextInt(1, 50); // [1, 50)
-//			Position newPos = new Position(rowRand, colRand);
-//			if (!poss.contains(newPos)) {
-//				i++;
-//				poss.add(newPos);
-//			}
-//		}
-//		int idx = 0;
-//		for (Position pos : poss) {
-//			speedPotions[idx] = new SpeedPotion(pos);
-//			speedPotions[idx].setVisible(false);
-//			idx++;
-//		}
+		// ArrayList<Position> poss = new ArrayList<Position>();
+		// for (int i = 0; i < 4;) {
+		// int rowRand = ThreadLocalRandom.current().nextInt(1, 29); // [1, 29)
+		// int colRand = ThreadLocalRandom.current().nextInt(1, 50); // [1, 50)
+		// Position newPos = new Position(rowRand, colRand);
+		// if (!poss.contains(newPos)) {
+		// i++;
+		// poss.add(newPos);
+		// }
+		// }
+		// int idx = 0;
+		// for (Position pos : poss) {
+		// speedPotions[idx] = new SpeedPotion(pos);
+		// speedPotions[idx].setVisible(false);
+		// idx++;
+		// }
 		///////////////////////
 	}
 
 	public void update() {
-//		frameCount++;
-//		if (frameCount % 1000 == 0) {
-//
-//		}
+		// frameCount++;
+		// if (frameCount % 1000 == 0) {
+		//
+		// }
 		playerA.move(); // move playerA along the direction from inputUtility
 		playerB.move(); // move playerB along the direction from inputUtility
 		int Arow = playerA.getPosition().row;
 		int Acol = playerA.getPosition().col;
-		if (InputUtility.getKeyPressed().contains(KeyCode.P)) {			
+		if (InputUtility.getKeyPressed().contains(KeyCode.P)) {
 			for (SpeedPotion sp : speedPotions) {
-				if (!sp.isVisible() || sp.getPosition() == null) continue;
+				if (!sp.isVisible() || sp.getPosition() == null)
+					continue;
 				if (sp.getPosition().equals(playerA.getPosition())) {
 					sp.pick(playerA);
 				}
@@ -461,5 +462,9 @@ public class GameController {
 			instance = new GameController();
 		}
 		return instance;
+	}
+
+	public static void stopGameController() {
+		instance = null;
 	}
 }

@@ -1,6 +1,5 @@
 package game.object.Items;
 
-import java.awt.RenderingHints.Key;
 
 import game.object.Item;
 import game.object.Player;
@@ -18,18 +17,18 @@ public class SpeedPotion extends Item implements Interactable {
 	private int poCount = 0;
 	private int col;
 	private int row;
-	
+
 	public SpeedPotion(Position pos) {
 		super();
 		setPosition(pos);
 		this.row = pos.row;
 		this.col = pos.col;
 	}
-	
+
 	@Override
 	public void draw(GraphicsContext gc) {
 
-		if (!isVisible){
+		if (!isVisible) {
 			// do nothing
 		} else {
 			if (0 <= poCount && poCount <= 14) {
@@ -44,7 +43,7 @@ public class SpeedPotion extends Item implements Interactable {
 
 	@Override
 	public void useEffect(Player p) {
-		new Thread(() -> { //XXX avoid this 
+		new Thread(() -> { // XXX avoid this
 			Platform.runLater(() -> p.setSpeed(17));
 			try {
 				Thread.sleep(1250);
@@ -64,7 +63,7 @@ public class SpeedPotion extends Item implements Interactable {
 		} else {
 			if (p.getSpeed() > 10) {
 				// do nothing
-			} else if (InputUtility.getKeyPressed().contains(KeyCode.P)){
+			} else if (InputUtility.getKeyPressed().contains(KeyCode.P)) {
 				this.setPosition(null);
 				this.isVisible = false;
 				this.useEffect(p);

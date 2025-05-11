@@ -329,6 +329,9 @@ public class PlayerSettingScene extends StackPane implements ChangeableScene {
 	
     public void start(SceneManager sceneManager) {
         Scene scene = new Scene(this, 1000, 600);
+        
+//		GameController.getInstance().initialGame();
+		
         sceneManager.getStage().setScene(scene);
         sceneManager.getStage().show();
         AudioManager.playBGM("Audio/PlayerSettingColorBGM.mp3");
