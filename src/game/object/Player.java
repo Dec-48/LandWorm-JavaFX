@@ -14,7 +14,7 @@ public class Player extends GameObject{
 	private int frameCount = 0;
 	private PlayerState playerState = PlayerState.In;
 	private String direction; //TODO : could be Enum
-	private Position prevInPosition;
+	private Position prevOutPosition;
 	private List<GridBox> currentTrail;
 	private ArrayList<KeyCode> movingKey;
 	private boolean isDrawn = false;
@@ -97,11 +97,11 @@ public class Player extends GameObject{
 	public void setDirection(String direction) {
 		this.direction = direction;
 	}
-	public Position getPrevInPosition() {
-		return prevInPosition;
+	public Position getprevOutPosition() {
+		return prevOutPosition;
 	}
-	public void setPrevInPosition(Position prevInPosition) {
-		this.prevInPosition = prevInPosition;
+	public void setprevOutPosition(Position prevOutPosition) {
+		this.prevOutPosition = prevOutPosition;
 	}
 	
 	public List<GridBox> getCurrentTrail() {

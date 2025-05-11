@@ -85,6 +85,7 @@ public class GameController {
 		if (paintStateA == 0) {
 			if (playerA.getPlayerState() == PlayerState.In) { // get out of SafeZone
 				playerA.setPlayerState(PlayerState.Out);
+				playerA.setprevOutPosition(new Position(Arow, Acol));
 			}
 		} else if (paintStateA == 3) { // move in SafeZone
 			if (playerA.getPlayerState() == PlayerState.Out) { // closed loop
@@ -97,6 +98,16 @@ public class GameController {
 				}
 				playerA.getCurrentTrail().clear();
 			}
+		} else if (paintStateA == 1) {
+			if (playerA.getCurrentTrail().getLast() != grid[Arow][Acol]) { // kill itself ??				
+				for (GridBox gb : playerA.getCurrentTrail()) {
+					gb.prevColor = gb.getColor();
+					gb.setColor(GridBox.blankColor);
+					gb.setState(gridState.Blank);
+				}
+				playerA.setPosition(playerA.getprevOutPosition());
+				playerA.getCurrentTrail().clear();
+			}
 		}
 		
 		
@@ -104,6 +115,7 @@ public class GameController {
 		if (paintStateB == 0) {
 			if (playerB.getPlayerState() == PlayerState.In) { // get out of SafeZone
 				playerB.setPlayerState(PlayerState.Out);
+				playerB.setprevOutPosition(new Position(Brow, Bcol));
 			}
 		} else if (paintStateB == 3) { // move in SafeZone
 			if (playerB.getPlayerState() == PlayerState.Out) { // closed loop

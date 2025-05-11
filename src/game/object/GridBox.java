@@ -8,8 +8,8 @@ import javafx.scene.paint.Paint;
 public class GridBox extends GameObject{
 	private Item item;
 	private gridState state = gridState.Blank;
-	private static Color blankColor = Color.BISQUE;
-	private Paint prevColor = blankColor;
+	public static Color blankColor = Color.BISQUE;
+	public Paint prevColor = blankColor;
 	private boolean isDrawn = false;
 	
 	public GridBox(int row, int col) {
@@ -74,6 +74,6 @@ public class GridBox extends GameObject{
 	            prevColor = this.color;
 	            isDrawn = true;
 	        }
-		}
+		} 
 	}
 }
