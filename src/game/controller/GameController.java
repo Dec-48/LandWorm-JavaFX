@@ -38,29 +38,6 @@ public class GameController {
 		playerB.setColor(b_color);
 		b_TrailColor = b_TrailColor.deriveColor(0, 1, 1, 0.3);
 		
-		background = new GameplayBackground();
-		GridBox[][] grid = GameController.getInstance().getGrid();
-		Player playerA = GameController.getInstance().getPlayerA();
-		Player playerB = GameController.getInstance().getPlayerB();
-		
-		background.setZ(0);
-		RenderableHolder.getInstance().add(background);
-		
-		for (GridBox[] i : grid) {
-			for (GridBox j : i) {
-				j.setZ(1);
-				RenderableHolder.getInstance().add(j);
-			}
-		}
-		
-		playerA.setZ(2);
-		playerB.setZ(2); 
-		
-		RenderableHolder.getInstance().add(playerA);
-		RenderableHolder.getInstance().add(playerB);
-		
-		RenderableHolder.getInstance().getEntities().sort(null);
-///////////////////////
 		for (int i = 0; i < 29; i++) {
 			for (int j = 0; j < 50; j++) {
 				grid[i][j] = new GridBox(i, j);
@@ -76,6 +53,24 @@ public class GameController {
 				grid[14 + di][37 + dj].setState(gridState.SafeZone);
 			}
 		}
+		
+		background = new GameplayBackground();
+		background.setZ(0);
+		RenderableHolder.getInstance().add(background);
+		
+		for (GridBox[] i : grid) {
+			for (GridBox j : i) {
+				j.setZ(1);
+				RenderableHolder.getInstance().add(j);
+			}
+		}
+		
+		playerA.setZ(2);
+		playerB.setZ(2); 
+		
+		RenderableHolder.getInstance().add(playerA);
+		RenderableHolder.getInstance().add(playerB);
+///////////////////////
 	}
 	
 	public void update() {

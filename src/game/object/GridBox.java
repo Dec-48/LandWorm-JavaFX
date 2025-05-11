@@ -60,13 +60,21 @@ public class GridBox extends GameObject{
 		if (state == gridState.Trail || state == gridState.SafeZone) {
 	        int row = this.getPosition().row;
 	        int col = this.getPosition().col;
-	        // ล้างช่องก่อนระบายสีใหม่
-	        gc.setFill(blankColor);
-	        gc.fillRoundRect(col * 20, row * 20, 20, 20, 3, 3);
-	        // ระบายสีอ่อนคงที่
-	        gc.setFill(color);
-	        gc.fillRoundRect(col * 20, row * 20, 20, 20, 3, 3);
-	        prevColor = this.color; 
+	        // วาดเฉพาะเมื่อสีหรือ state เปลี่ยน
+	        if (!color.equals(prevColor) || !isDrawn) {
+	            // ล้างช่องด้วยความโปร่งใส
+	            gc.setFill(Color.color(0, 0, 0, 0));
+	            gc.fillRoundRect(col * 20, row * 20, 20, 20, 3, 3);
+	            // ระบายสีโปร่งใส 30%
+	     //      gc.setGlobalAlpha(0.3); // ความโปร่งใส 30%
+	            gc.setFill((Color)color);
+	            gc.fillRoundRect(col * 20, row * 20, 20, 20, 3, 3);
+	            gc.setGlobalAlpha(1.0); // รีเซ็ต
+	            prevColor = this.color;
+	            isDrawn = true;
+	        }
 	    }
+		
 	}
+	
 }
