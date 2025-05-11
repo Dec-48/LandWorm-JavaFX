@@ -127,7 +127,6 @@ public class Player extends GameObject{
 			int col = this.position.col;
 			gc.setFill(this.color);
 			gc.fillOval(col * 20, row * 20, 10, 10);
-
 		}
 	
 	public void setMovingKey(KeyCode[] movingKey) {
