@@ -165,17 +165,18 @@ public class Player extends GameObject {
 	
 	@Override
 	public void draw(GraphicsContext gc) {
-		if (wormCount == 60) wormCount = 0;
-		int idx = wormCount / 15;
+		if (wormCount == 16) wormCount = 0;
+		int idx = wormCount / 4;
 		boolean flip = (this.direction == "DOWN" || this.direction == "LEFT");
+		int offset = (40-20)/2;
 		if (this.direction == "UP" || this.direction == "DOWN") {
 			int row = this.position.row, col = this.position.col;
-			if (!flip) gc.drawImage(vertWorm[idx], col * 20, row * 20, 20, 20);
-			else gc.drawImage(vertWorm[idx], col * 20, row * 20 + 20, 20, -20);
+			if (!flip) gc.drawImage(vertWorm[idx], (col * 20)-offset, (row *20)-offset, 40, 40);
+			else gc.drawImage(vertWorm[idx], (col * 20)-offset, (row * 20) + 40-offset, 40, -40);
 		} else {
 			int row = this.position.row, col = this.position.col;
-			if (!flip) gc.drawImage(horiWorm[idx], col * 20, row * 20, 20, 20);
-			else gc.drawImage(horiWorm[idx], col * 20 + 20, row * 20, -20, 20);
+			if (!flip) gc.drawImage(horiWorm[idx], col * 20-offset, row * 20-offset, 40, 40);
+			else gc.drawImage(horiWorm[idx], col * 20+40-offset, row *20-offset, -40, 40);
 		}
 		wormCount++;
 	}

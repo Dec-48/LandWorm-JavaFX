@@ -1,4 +1,4 @@
-	package game.controller;
+package game.controller;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -10,7 +10,6 @@ import java.util.Queue;
 import java.util.TreeSet;
 import java.util.concurrent.ThreadLocalRandom;
 
-import game.object.GameplayBackground;
 import game.object.GridBox;
 import game.object.Player;
 import game.object.PlayerState;
@@ -20,12 +19,13 @@ import game.object.Items.SpeedPotion;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import map.GameplayBackground;
 import sharedObject.RenderableHolder;
 
 public class GameController {
 	private static GameController instance;
-	private KeyCode[] movingKeyA = {KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D};
-	private KeyCode[] movingKeyB = {KeyCode.UP, KeyCode.LEFT, KeyCode.DOWN, KeyCode.RIGHT};
+	private KeyCode[] movingKeyA = { KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D };
+	private KeyCode[] movingKeyB = { KeyCode.UP, KeyCode.LEFT, KeyCode.DOWN, KeyCode.RIGHT };
 	private Player playerA = new Player(movingKeyA);
 	private Player playerB = new Player(movingKeyB);
 	private SpeedPotion[] speedPotions = new SpeedPotion[4];
@@ -37,8 +37,8 @@ public class GameController {
 	private Color b_color = Color.DARKBLUE;
 	private Color b_TrailColor = Color.BLUE;
 	private GameplayBackground background;
-	
-	public void initialGame() { //TODO : this need to rename to initialGame ???
+
+	public void initialGame() { // TODO : this need to rename to initialGame ???
 		playerA.setColor(a_color);
 		playerB.setColor(b_color);
 
@@ -57,33 +57,33 @@ public class GameController {
 				grid[14 + di][37 + dj].setState(gridState.SafeZone);
 			}
 		}
-		
+
 		background = new GameplayBackground();
 		background.setZ(0);
 		RenderableHolder.getInstance().add(background);
-		
+
 		for (GridBox[] i : grid) {
 			for (GridBox j : i) {
 				j.setZ(1);
 				RenderableHolder.getInstance().add(j);
 			}
 		}
-		
+
 		playerA.setZ(3);
-		playerB.setZ(3); 
+		playerB.setZ(3);
 
 		RenderableHolder.getInstance().add(playerA);
 		RenderableHolder.getInstance().add(playerB);
-		
+
 		ArrayList<Position> poss = new ArrayList<Position>();
 		for (int i = 0; i < 4;) {
-		    int rowRand = ThreadLocalRandom.current().nextInt(1, 29); // [1, 29)
-		    int colRand = ThreadLocalRandom.current().nextInt(1, 50); // [1, 50)
-		    Position newPos = new Position(rowRand, colRand);
-		    if (!poss.contains(newPos)) {
-		    	i++;
-		    	poss.add(newPos);
-		    }
+			int rowRand = ThreadLocalRandom.current().nextInt(1, 29); // [1, 29)
+			int colRand = ThreadLocalRandom.current().nextInt(1, 50); // [1, 50)
+			Position newPos = new Position(rowRand, colRand);
+			if (!poss.contains(newPos)) {
+				i++;
+				poss.add(newPos);
+			}
 		}
 		int idx = 0;
 		for (Position pos : poss) {
@@ -91,24 +91,24 @@ public class GameController {
 			speedPotions[idx].setVisible(false);
 			idx++;
 		}
-///////////////////////
+		///////////////////////
 	}
-	
+
 	public void update() {
 		frameCount++;
 		if (frameCount % 100000 == 0) {
-			
+
 		}
 		playerA.move(); // move playerA along the direction from inputUtility
 		playerB.move(); // move playerB along the direction from inputUtility
 		int Arow = playerA.getPosition().row;
 		int Acol = playerA.getPosition().col;
-		playerA.addCurrentTrail(grid[Arow][Acol]); 
+		playerA.addCurrentTrail(grid[Arow][Acol]);
 		int Brow = playerB.getPosition().row;
 		int Bcol = playerB.getPosition().col;
 		playerB.addCurrentTrail(grid[Brow][Bcol]);
-		//TODO: modify this method in order to handle double line trail!!!
-		int paintStateA = grid[Arow][Acol].paintTrail(a_TrailColor); //XXX here!!!
+		// TODO: modify this method in order to handle double line trail!!!
+		int paintStateA = grid[Arow][Acol].paintTrail(a_TrailColor); // XXX here!!!
 		if (paintStateA == 0) {
 			if (playerA.getPlayerState() == PlayerState.In) { // get out of SafeZone
 				playerA.setPlayerState(PlayerState.Out);
@@ -117,7 +117,8 @@ public class GameController {
 		} else if (paintStateA == 3) { // move in SafeZone
 			if (playerA.getPlayerState() == PlayerState.Out) { // closed loop
 				playerA.setPlayerState(PlayerState.In);
-				for (GridBox gb : playerA.getCurrentTrail()) gb.setState(gridState.SafeZone);
+				for (GridBox gb : playerA.getCurrentTrail())
+					gb.setState(gridState.SafeZone);
 				ArrayList<Position> spaces = this.fillSpace(playerA.getCurrentTrail(), a_TrailColor);
 				for (Position pos : spaces) {
 					grid[pos.row][pos.col].setColor(a_TrailColor);
@@ -126,23 +127,23 @@ public class GameController {
 				playerA.getCurrentTrail().clear();
 			}
 		} else if (paintStateA == 1) {
-			if (playerA.getCurrentTrail().getLast() != grid[Arow][Acol]) { // kill itself ??				
+			if (playerA.getCurrentTrail().getLast() != grid[Arow][Acol]) { // kill itself ??
 				for (GridBox gb : playerA.getCurrentTrail()) {
 					if (gb.getState() == gridState.Trail) {
 						gb.setColor(GridBox.blankColor);
-						gb.setState(gridState.Blank);						
+						gb.setState(gridState.Blank);
 					}
 				}
 				int row = playerA.getprevOutPosition().row;
 				int col = playerA.getprevOutPosition().col;
 				playerA.setPosition(new Position(row, col));
 				grid[row][col].setState(gridState.SafeZone);
-//				playerA.setPosition(playerA.getprevOutPosition()); //XXX: fuck undefied behavior!!!!
+				// playerA.setPosition(playerA.getprevOutPosition()); //XXX: fuck undefied
+				// behavior!!!!
 				playerA.getCurrentTrail().clear();
 			}
 		}
-		
-		
+
 		int paintStateB = grid[Brow][Bcol].paintTrail(b_TrailColor);
 		if (paintStateB == 0) {
 			if (playerB.getPlayerState() == PlayerState.In) { // get out of SafeZone
@@ -152,12 +153,13 @@ public class GameController {
 		} else if (paintStateB == 3) { // move in SafeZone
 			if (playerB.getPlayerState() == PlayerState.Out) { // closed loop
 				playerB.setPlayerState(PlayerState.In);
-				for (GridBox gb : playerB.getCurrentTrail()) gb.setState(gridState.SafeZone);
+				for (GridBox gb : playerB.getCurrentTrail())
+					gb.setState(gridState.SafeZone);
 				ArrayList<Position> spaces = this.fillSpace(playerB.getCurrentTrail(), b_TrailColor);
 				for (Position pos : spaces) {
 					grid[pos.row][pos.col].setState(gridState.SafeZone);
 					grid[pos.row][pos.col].setColor(b_TrailColor);
-				}	
+				}
 				playerB.getCurrentTrail().clear();
 			}
 		} else if (paintStateB == 1) {
@@ -165,9 +167,9 @@ public class GameController {
 				for (GridBox gb : playerB.getCurrentTrail()) {
 					if (gb.getState() == gridState.Trail) {
 						gb.setColor(GridBox.blankColor);
-						gb.setState(gridState.Blank);						
+						gb.setState(gridState.Blank);
 					}
-				}				
+				}
 				int row = playerB.getprevOutPosition().row;
 				int col = playerB.getprevOutPosition().col;
 				grid[row][col].setState(gridState.SafeZone);
@@ -177,7 +179,8 @@ public class GameController {
 		}
 	}
 
-	private ArrayList<Position> fillSpace(List<GridBox> currentTrail, Paint trailColor) { //XXX: still have bug when too zig zag path
+	private ArrayList<Position> fillSpace(List<GridBox> currentTrail, Paint trailColor) { // XXX: still have bug when too
+																																												// zig zag path
 		ArrayList<Position> ret = new ArrayList<Position>();
 		Boolean vis[][] = new Boolean[29][50];
 		for (int i = 0; i < 29; i++) {
@@ -185,8 +188,10 @@ public class GameController {
 				vis[i][j] = false;
 			}
 		}
-//		Map<Integer, TreeSet<Integer>> row = new HashMap<Integer, TreeSet<Integer>>();
-//		Map<Integer, TreeSet<Integer>> col = new HashMap<Integer, TreeSet<Integer>>();
+		// Map<Integer, TreeSet<Integer>> row = new HashMap<Integer,
+		// TreeSet<Integer>>();
+		// Map<Integer, TreeSet<Integer>> col = new HashMap<Integer,
+		// TreeSet<Integer>>();
 		Map<Integer, ArrayList<Integer>> row = new HashMap<Integer, ArrayList<Integer>>();
 		Map<Integer, ArrayList<Integer>> col = new HashMap<Integer, ArrayList<Integer>>();
 		for (GridBox gb : currentTrail) {
@@ -195,31 +200,33 @@ public class GameController {
 			if (row.containsKey(i)) {
 				row.get(i).add(j);
 			} else {
-//				TreeSet<Integer> s = new TreeSet<Integer>(); s.add(j);
-				ArrayList<Integer> s = new ArrayList<Integer>(); s.add(j);
+				// TreeSet<Integer> s = new TreeSet<Integer>(); s.add(j);
+				ArrayList<Integer> s = new ArrayList<Integer>();
+				s.add(j);
 				row.put(i, s);
 			}
 			if (col.containsKey(j)) {
 				col.get(j).add(i);
 			} else {
-//				TreeSet<Integer> s = new TreeSet<Integer>(); s.add(i);
-				ArrayList<Integer> s = new ArrayList<Integer>(); s.add(i);
+				// TreeSet<Integer> s = new TreeSet<Integer>(); s.add(i);
+				ArrayList<Integer> s = new ArrayList<Integer>();
+				s.add(i);
 				col.put(j, s);
 			}
 		}
 		for (Integer i : row.keySet()) {
 			if (row.get(i).size() > 1) {
-//				if (row.get(i).getLast() - row.get(i).getFirst() <= 1) continue;
-//				for (int j = row.get(i).getFirst() + 1; j <= row.get(i).getLast() - 1; j++) {
-//					if (grid[i][j].getColor() != trailColor) {
-//						if (!vis[i][j]) {
-//							vis[i][j] = true;
-//							ret.add(new Position(i, j));
-//						}
-//					}
-//				}
+				// if (row.get(i).getLast() - row.get(i).getFirst() <= 1) continue;
+				// for (int j = row.get(i).getFirst() + 1; j <= row.get(i).getLast() - 1; j++) {
+				// if (grid[i][j].getColor() != trailColor) {
+				// if (!vis[i][j]) {
+				// vis[i][j] = true;
+				// ret.add(new Position(i, j));
+				// }
+				// }
+				// }
 				Integer[] copy = row.get(i).toArray(new Integer[0]);
-		        Arrays.sort(copy);
+				Arrays.sort(copy);
 				ArrayList<Integer> tmp = new ArrayList<Integer>();
 				tmp.add(copy[0]);
 				for (int idx = 1; idx < copy.length - 1; idx++) {
@@ -230,11 +237,12 @@ public class GameController {
 				}
 				tmp.add(copy[copy.length - 1]);
 				for (int idx = 0; idx < tmp.size() - 1; idx += 2) {
-					int sJ = tmp.get(idx); int eJ = tmp.get(idx + 1);
+					int sJ = tmp.get(idx);
+					int eJ = tmp.get(idx + 1);
 					for (int j = sJ; j <= eJ; j++) {
 						if (grid[i][j].getColor() != trailColor && grid[i][j].getState() != gridState.SafeZone) {
 							if (!vis[i][j]) {
-								vis[i][j] 	= true;
+								vis[i][j] = true;
 								ret.add(new Position(i, j));
 							}
 						}
@@ -244,19 +252,19 @@ public class GameController {
 		}
 		for (Integer j : col.keySet()) {
 			if (col.get(j).size() > 1) {
-//				if (col.get(j).getLast() - col.get(j).getFirst() <= 1) continue;
-//				for (int i = col.get(j).getFirst() + 1; i <= col.get(j).getLast() - 1; i++) {
-//					if (grid[i][j].getColor() != trailColor) {
-//						if (!vis[i][j]) {
-//							vis[i][j] 	= true;
-//							ret.add(new Position(i, j));
-//						}
-//					}
-//				}
+				// if (col.get(j).getLast() - col.get(j).getFirst() <= 1) continue;
+				// for (int i = col.get(j).getFirst() + 1; i <= col.get(j).getLast() - 1; i++) {
+				// if (grid[i][j].getColor() != trailColor) {
+				// if (!vis[i][j]) {
+				// vis[i][j] = true;
+				// ret.add(new Position(i, j));
+				// }
+				// }
+				// }
 				Integer[] copy = col.get(j).toArray(new Integer[0]);
-		        Arrays.sort(copy);
+				Arrays.sort(copy);
 				ArrayList<Integer> tmp = new ArrayList<Integer>();
-				tmp.add(copy[0]);	
+				tmp.add(copy[0]);
 				for (int idx = 1; idx < copy.length - 1; idx++) {
 					if (copy[idx + 1] - copy[idx] == 1) {
 					} else {
@@ -265,25 +273,29 @@ public class GameController {
 				}
 				tmp.add(copy[copy.length - 1]);
 				for (int idx = 0; idx < tmp.size() - 1; idx += 2) {
-					int sI = tmp.get(idx); int eI = tmp.get(idx + 1);
+					int sI = tmp.get(idx);
+					int eI = tmp.get(idx + 1);
 					for (int i = sI; i <= eI; i++) {
 						if (grid[i][j].getColor() != trailColor && grid[i][j].getState() != gridState.SafeZone) {
 							if (!vis[i][j]) {
-								vis[i][j] 	= true;
+								vis[i][j] = true;
 								ret.add(new Position(i, j));
 							}
 						}
 					}
 				}
-			}	
+			}
 		}
-		
+
 		ArrayList<Position> tmp = new ArrayList<Position>();
 		Integer canditRow = null;
 		Integer canditCol = null;
 		int angleCount = 0;
 		for (GridBox gb : currentTrail) {
-			int dirFlag[][] = new int[3][3]; for (int i = 0; i < 3; i++) for (int j = 0; j < 3; j++) dirFlag[i][j] = 0;
+			int dirFlag[][] = new int[3][3];
+			for (int i = 0; i < 3; i++)
+				for (int j = 0; j < 3; j++)
+					dirFlag[i][j] = 0;
 			int curRow = gb.getPosition().row;
 			int curCol = gb.getPosition().col;
 			vis[curRow][curCol] = true;
@@ -324,21 +336,25 @@ public class GameController {
 			}
 		}
 		for (Position pos : ret) {
-//			if (vis[pos.row][pos.col] || grid[pos.row][pos.col].getState() == gridState.SafeZone) continue;
+			// if (vis[pos.row][pos.col] || grid[pos.row][pos.col].getState() ==
+			// gridState.SafeZone) continue;
 			if (grid[pos.row][pos.col].getState() == gridState.SafeZone
-				&& grid[pos.row][pos.col].getColor() == trailColor) continue;
+					&& grid[pos.row][pos.col].getColor() == trailColor)
+				continue;
 			Queue<Position> q = new ArrayDeque<Position>();
 			q.add(pos);
 			while (!q.isEmpty()) {
 				Position cur = q.remove();
 				if (grid[cur.row][cur.col].getState() == gridState.SafeZone
-					&& grid[cur.row][cur.col].getColor() == trailColor) continue;
+						&& grid[cur.row][cur.col].getColor() == trailColor)
+					continue;
 				for (int d = -1; d <= 1; d += 2) {
-					int newRow = cur.row + d; int newCol = cur.col + d;
+					int newRow = cur.row + d;
+					int newCol = cur.col + d;
 					Position newPos;
 					if (0 <= newRow && newRow < 29) {
 						if (!vis[newRow][cur.col] && grid[newRow][cur.col].getColor() != trailColor) {
-							newPos = new Position(newRow, cur.col); 
+							newPos = new Position(newRow, cur.col);
 							vis[newRow][cur.col] = true;
 							tmp.add(newPos);
 							q.add(newPos);
@@ -358,12 +374,11 @@ public class GameController {
 		ret.addAll(tmp);
 		return ret;
 	}
-	
-	
+
 	public Player getPlayerA() {
 		return playerA;
 	}
-	
+
 	public Player getPlayerB() {
 		return playerB;
 	}
@@ -371,6 +386,7 @@ public class GameController {
 	public Color getA_color() {
 		return a_color;
 	}
+
 	public Color getA_TrailColor() {
 		return a_TrailColor;
 	}
@@ -378,11 +394,12 @@ public class GameController {
 	public Color getB_color() {
 		return b_color;
 	}
+
 	public Color getB_TrailColor() {
 		return b_TrailColor;
 	}
-	
-	//Flim Fall added this for getting color name in filepath easier
+
+	// Flim Fall added this for getting color name in filepath easier
 	public String getA_stringColor() {
 		if ((a_color == Color.RED) || (a_color == Color.DARKRED)) {
 			return "Red";
@@ -396,9 +413,9 @@ public class GameController {
 			return "Pink";
 		}
 	}
-	
+
 	public String getB_stringColor() {
-		if ((b_color == Color.RED ) || (b_color == Color.DARKRED)) {
+		if ((b_color == Color.RED) || (b_color == Color.DARKRED)) {
 			return "Red";
 		} else if (b_color == Color.YELLOW) {
 			return "Yellow";
@@ -411,21 +428,20 @@ public class GameController {
 		}
 	}
 
-
 	public GridBox[][] getGrid() {
 		return grid;
 	}
-	
+
 	public void setPlayerAcolors(Color playerColor, Color trailColor) {
 		this.a_color = playerColor;
 		this.a_TrailColor = trailColor;
 	}
-	
+
 	public void setPlayerBcolors(Color playerColor, Color trailColor) {
 		this.b_color = playerColor;
 		this.b_TrailColor = trailColor;
 	}
-	
+
 	public static GameController getInstance() {
 		if (instance == null) {
 			instance = new GameController();
