@@ -59,10 +59,10 @@ public class MainMenuScene extends StackPane implements ChangeableScene {
 
 	@Override
 	public void start(SceneManager sceneManager) {
+		AudioManager.playBGM("Audio/MainMenuBGM.mp3");
 		Scene scene = new Scene(this, 1000, 600);
 		sceneManager.getStage().setScene(scene);
 		sceneManager.getStage().show();
-		AudioManager.playBGM("Audio/MainMenuBGM.mp3");
 	}
 
 	public void stop(SceneManager sceneManager) {

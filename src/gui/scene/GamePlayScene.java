@@ -9,23 +9,24 @@ import game.object.Player;
 import input.InputUtility;
 import javafx.animation.AnimationTimer;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.StackPane;
 import sharedObject.RenderableHolder;
+import map.GameplayBackground;
 
 public class GamePlayScene extends StackPane implements ChangeableScene{
 	private static GamePlayScene instance;
 	private AnimationTimer animation;
 	
-	
 	public GamePlayScene() {
 		super();
 		this.setPrefWidth(1000);
 		this.setPrefHeight(600);
-		
+				
 		GameCanvas gameCanvas = new GameCanvas(1000, 580); 
 		gameCanvas.addListerner();
 	
-		this.getChildren().add(gameCanvas);
+		this.getChildren().addAll(gameCanvas);
 		gameCanvas.requestFocus(); 
 		
 		GameController.getInstance().initialGame();
