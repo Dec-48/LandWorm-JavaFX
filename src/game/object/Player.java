@@ -17,6 +17,7 @@ public class Player extends GameObject{
 	private Position prevInPosition;
 	private List<GridBox> currentTrail;
 	private ArrayList<KeyCode> movingKey;
+	private boolean isDrawn = false;
 
 	public Player(KeyCode[] movingKey) {
 		this.setSpeed(10);
@@ -122,12 +123,12 @@ public class Player extends GameObject{
 	
 	@Override
 	public void draw(GraphicsContext gc) {
-		// TODO Auto-generated method stub
-		int row = this.position.row;
-		int col = this.position.col;
-		gc.setFill(this.color);
-		gc.fillOval(col * 20, row * 20, 10, 10);
-	}
+			int row = this.position.row;
+			int col = this.position.col;
+			gc.setFill(this.color);
+			gc.fillOval(col * 20, row * 20, 10, 10);
+
+		}
 	
 	public void setMovingKey(KeyCode[] movingKey) {
 		this.movingKey = new ArrayList<KeyCode>(List.of(movingKey));

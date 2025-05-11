@@ -30,25 +30,6 @@ public class GamePlayScene extends StackPane implements ChangeableScene{
 		
 		GameController.getInstance().initialGame();
 		
-		GridBox[][] grid = GameController.getInstance().getGrid();
-		Player playerA = GameController.getInstance().getPlayerA();
-		Player playerB = GameController.getInstance().getPlayerB();
-		
-		System.out.println(GameController.getInstance().getA_stringColor());  //Film trying this and yes! playerA's color already change from that choosing page bue the gameplay still red and blue.
-		
-		playerA.setZ(2);
-		playerB.setZ(2); // I have to do this cause the grid will draw over playB blue dot :(
-		
-//		*** TEMPORARY USAGE NAKUB 
-//		** We must not add to RenderableHolder here but in our GameController instead!
-		for (GridBox[] i : grid) {
-			for (GridBox j : i) {
-				RenderableHolder.getInstance().add(j);
-			}
-		}
-		
-		RenderableHolder.getInstance().add(playerA);
-		RenderableHolder.getInstance().add(playerB);
 		
 		animation = new AnimationTimer() {
 			@Override
