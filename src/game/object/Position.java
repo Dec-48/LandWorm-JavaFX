@@ -25,4 +25,10 @@ public class Position {
 		else if (this.col >= maxWidth) this.col = maxWidth - 1;
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		Position other = (Position) obj;
+		return (this.row == other.row) && (this.col == other.col);
+	}
+	
 }

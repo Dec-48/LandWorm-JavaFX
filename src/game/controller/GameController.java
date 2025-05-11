@@ -16,6 +16,7 @@ import game.object.PlayerState;
 import game.object.Position;
 import game.object.gridState;
 import game.object.Items.SpeedPotion;
+import input.InputUtility;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -28,7 +29,7 @@ public class GameController {
 	private KeyCode[] movingKeyB = { KeyCode.UP, KeyCode.LEFT, KeyCode.DOWN, KeyCode.RIGHT };
 	private Player playerA = new Player(movingKeyA);
 	private Player playerB = new Player(movingKeyB);
-	private SpeedPotion[] speedPotions = new SpeedPotion[4];
+	private ArrayList<SpeedPotion> speedPotions = new ArrayList<SpeedPotion>();
 	private GridBox[][] grid = new GridBox[29][50];
 	private int frameCount = 0;
 	private int maxPotion = 4;
@@ -75,34 +76,47 @@ public class GameController {
 		RenderableHolder.getInstance().add(playerA);
 		RenderableHolder.getInstance().add(playerB);
 
-		ArrayList<Position> poss = new ArrayList<Position>();
-		for (int i = 0; i < 4;) {
-			int rowRand = ThreadLocalRandom.current().nextInt(1, 29); // [1, 29)
-			int colRand = ThreadLocalRandom.current().nextInt(1, 50); // [1, 50)
-			Position newPos = new Position(rowRand, colRand);
-			if (!poss.contains(newPos)) {
-				i++;
-				poss.add(newPos);
-			}
-		}
-		int idx = 0;
-		for (Position pos : poss) {
-			speedPotions[idx] = new SpeedPotion(pos);
-			speedPotions[idx].setVisible(false);
-			idx++;
-		}
+		SpeedPotion sp = new SpeedPotion(new Position(4, 4));
+		sp.setVisible(true);
+		sp.setZ(3);
+		speedPotions.add(sp);
+		RenderableHolder.getInstance().add(sp);
+//		ArrayList<Position> poss = new ArrayList<Position>();
+//		for (int i = 0; i < 4;) {
+//			int rowRand = ThreadLocalRandom.current().nextInt(1, 29); // [1, 29)
+//			int colRand = ThreadLocalRandom.current().nextInt(1, 50); // [1, 50)
+//			Position newPos = new Position(rowRand, colRand);
+//			if (!poss.contains(newPos)) {
+//				i++;
+//				poss.add(newPos);
+//			}
+//		}
+//		int idx = 0;
+//		for (Position pos : poss) {
+//			speedPotions[idx] = new SpeedPotion(pos);
+//			speedPotions[idx].setVisible(false);
+//			idx++;
+//		}
 		///////////////////////
 	}
 
 	public void update() {
-		frameCount++;
-		if (frameCount % 100000 == 0) {
-
-		}
+//		frameCount++;
+//		if (frameCount % 1000 == 0) {
+//
+//		}
 		playerA.move(); // move playerA along the direction from inputUtility
 		playerB.move(); // move playerB along the direction from inputUtility
 		int Arow = playerA.getPosition().row;
 		int Acol = playerA.getPosition().col;
+		if (InputUtility.getKeyPressed().contains(KeyCode.P)) {			
+			for (SpeedPotion sp : speedPotions) {
+				if (!sp.isVisible() || sp.getPosition() == null) continue;
+				if (sp.getPosition().equals(playerA.getPosition())) {
+					sp.pick(playerA);
+				}
+			}
+		}
 		playerA.addCurrentTrail(grid[Arow][Acol]);
 		int Brow = playerB.getPosition().row;
 		int Bcol = playerB.getPosition().col;
@@ -447,13 +461,5 @@ public class GameController {
 			instance = new GameController();
 		}
 		return instance;
-	}
-
-	public SpeedPotion[] getSpeedPotions() {
-		return speedPotions;
-	}
-
-	public void setSpeedPotions(SpeedPotion[] speedPotions) {
-		this.speedPotions = speedPotions;
 	}
 }

@@ -11,8 +11,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
 public class Player extends GameObject {
-	private int speed;
-	private int speedDuration = 0;
+	private Integer speed;
 	private int paintSize;
 	private int frameCount = 0;
 	private int wormCount = 0; //
@@ -87,11 +86,11 @@ public class Player extends GameObject {
 		}
 	}
 
-	public int getSpeed() {
+	public Integer getSpeed() {
 		return speed;
 	}
 
-	public void setSpeed(int speed) {
+	public void setSpeed(Integer speed) {
 		this.speed = speed;
 	}
 

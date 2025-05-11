@@ -1,23 +1,35 @@
 package game.object.Items;
 
+import java.awt.RenderingHints.Key;
+
 import game.object.Item;
 import game.object.Player;
 import game.object.Position;
 import game.object.interfaces.Interactable;
+import input.InputUtility;
+import javafx.application.Platform;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
 
 public class SpeedPotion extends Item implements Interactable {
 	private static Image Image1 = new Image(ClassLoader.getSystemResource("Image/potion_1.png").toString());
 	private static Image Image2 = new Image(ClassLoader.getSystemResource("Image/potion_2.png").toString());
 	private int poCount = 0;
-	private int col = this.getPosition().col;
-	private int row = this.getPosition().row;
-
+	private int col;
+	private int row;
+	
+	public SpeedPotion(Position pos) {
+		super();
+		setPosition(pos);
+		this.row = pos.row;
+		this.col = pos.col;
+	}
+	
 	@Override
 	public void draw(GraphicsContext gc) {
 
-		if (!isVisble){
+		if (!isVisible){
 			// do nothing
 		} else {
 			if (0 <= poCount && poCount <= 14) {
@@ -32,12 +44,16 @@ public class SpeedPotion extends Item implements Interactable {
 
 	@Override
 	public void useEffect(Player p) {
-		// TODO Auto-generated method stub
-		if (!isVisible) {
-			// do nothing
-		} else {
-
-		}
+		new Thread(() -> { //XXX avoid this 
+			Platform.runLater(() -> p.setSpeed(17));
+			try {
+				Thread.sleep(1250);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			Platform.runLater(() -> p.setSpeed(10));
+		}).start();
 	}
 
 	@Override
@@ -46,7 +62,13 @@ public class SpeedPotion extends Item implements Interactable {
 		if (!isVisible) {
 			// do nothing
 		} else {
-
+			if (p.getSpeed() > 10) {
+				// do nothing
+			} else if (InputUtility.getKeyPressed().contains(KeyCode.P)){
+				this.setPosition(null);
+				this.isVisible = false;
+				this.useEffect(p);
+			}
 		}
 	}
 
