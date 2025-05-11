@@ -9,15 +9,16 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.TreeSet;
 
-import game.object.GameplayBackground;
 import game.object.GridBox;
 import game.object.Player;
 import game.object.PlayerState;
 import game.object.Position;
 import game.object.gridState;
+import game.object.Items.SpeedPotion;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import map.GameplayBackground;
 import sharedObject.RenderableHolder;
 
 public class GameController {
@@ -69,6 +70,8 @@ public class GameController {
 		
 		RenderableHolder.getInstance().add(playerA);
 		RenderableHolder.getInstance().add(playerB);
+		
+		RenderableHolder.getInstance().add(new SpeedPotion());
 ///////////////////////
 	}
 	

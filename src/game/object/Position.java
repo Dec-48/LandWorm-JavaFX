@@ -1,9 +1,13 @@
 package game.object;
 
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
+
 public class Position {
 	public static int maxHeight = 29;
 	public static int maxWidth = 50;
 	public int row, col;
+	
 	public Position(int row, int col){
 		this.row = row;
 		this.col = col;
@@ -20,4 +24,5 @@ public class Position {
 		if (this.col < 0) this.col = 0;
 		else if (this.col >= maxWidth) this.col = maxWidth - 1;
 	}
+	
 }

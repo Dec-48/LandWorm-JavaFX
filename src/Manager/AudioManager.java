@@ -18,7 +18,6 @@ public class AudioManager {
         if (bgm != null) {
             bgm.setVolume(BGMVOLUME);
         }
-        System.out.println("BGM Volume set to: " + BGMVOLUME);
     }
 
     public static void setEffectVolume(double volume) {
