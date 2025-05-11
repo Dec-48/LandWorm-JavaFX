@@ -71,7 +71,6 @@ public class GameController {
 		RenderableHolder.getInstance().add(playerA);
 		RenderableHolder.getInstance().add(playerB);
 		
-		RenderableHolder.getInstance().add(new SpeedPotion());
 ///////////////////////
 	}
 	
@@ -371,5 +370,9 @@ public class GameController {
 			instance = new GameController();
 		}
 		return instance;
+	}
+	
+	public static void stopGameController() {
+		instance = null;
 	}
 }

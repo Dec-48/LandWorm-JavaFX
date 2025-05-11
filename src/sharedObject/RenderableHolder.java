@@ -26,6 +26,9 @@ public class RenderableHolder {
 		Collections.sort(entities, comparator);
 	}
 	
+	public void clearHolder() {
+		entities.clear();
+	}
 	
 	public List<IRenderable> getEntities() {
 		return entities;
