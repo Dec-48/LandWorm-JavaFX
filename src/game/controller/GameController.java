@@ -34,10 +34,8 @@ public class GameController {
 	
 	public void initialGame() { //TODO : this need to rename to initialGame ???
 		playerA.setColor(a_color);
-		a_TrailColor = a_TrailColor.deriveColor(0, 1, 1, 0.3);
 		playerB.setColor(b_color);
-		b_TrailColor = b_TrailColor.deriveColor(0, 1, 1, 0.3);
-		
+
 		for (int i = 0; i < 29; i++) {
 			for (int j = 0; j < 50; j++) {
 				grid[i][j] = new GridBox(i, j);
@@ -65,8 +63,8 @@ public class GameController {
 			}
 		}
 		
-		playerA.setZ(2);
-		playerB.setZ(2); 
+		playerA.setZ(3);
+		playerB.setZ(3); 
 		
 		RenderableHolder.getInstance().add(playerA);
 		RenderableHolder.getInstance().add(playerB);
@@ -267,12 +265,12 @@ public class GameController {
 	
 	public void setPlayerAcolors(Color playerColor, Color trailColor) {
 		this.a_color = playerColor;
-		this.a_TrailColor = trailColor.deriveColor(0, 1, 1, 0.3);;
+		this.a_TrailColor = trailColor;
 	}
 	
 	public void setPlayerBcolors(Color playerColor, Color trailColor) {
 		this.b_color = playerColor;
-		this.b_TrailColor = trailColor.deriveColor(0, 1, 1, 0.3);;
+		this.b_TrailColor = trailColor;
 	}
 	
 	public static GameController getInstance() {

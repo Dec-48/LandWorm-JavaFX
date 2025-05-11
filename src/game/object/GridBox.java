@@ -38,6 +38,7 @@ public class GridBox extends GameObject{
 			this.setColor(trailColor);
 		}
 		return 0;
+		
 	}
 	
 	public Item getItem() {
@@ -67,14 +68,12 @@ public class GridBox extends GameObject{
 	            gc.fillRoundRect(col * 20, row * 20, 20, 20, 3, 3);
 	            // ระบายสีโปร่งใส 30%
 	     //      gc.setGlobalAlpha(0.3); // ความโปร่งใส 30%
-	            gc.setFill((Color)color);
+	            gc.setFill((Color) color);
 	            gc.fillRoundRect(col * 20, row * 20, 20, 20, 3, 3);
 	            gc.setGlobalAlpha(1.0); // รีเซ็ต
 	            prevColor = this.color;
 	            isDrawn = true;
 	        }
-	    }
-		
+		}
 	}
-	
 }
