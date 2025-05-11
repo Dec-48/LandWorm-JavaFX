@@ -9,13 +9,13 @@ public class GameplayBackground implements IRenderable {
 	private Image[][] background = new Image[29][50];
 	private Image ImageBox0 = new Image(ClassLoader.getSystemResource("Image/box0.png").toString());
 	private Image ImageBox1 = new Image(ClassLoader.getSystemResource("Image/box1.png").toString());
-	private Image ImageBox2 = new Image(ClassLoader.getSystemResource("Image/box2.png").toString());
+	private Image ImageBox2 = new Image(ClassLoader.getSystemResource("Image/box2.JPG").toString());
 	private int[][] ImageIndicater =  {
 		    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		    {0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 		    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 		    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		    {0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 		    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 		    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 		    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -45,12 +45,12 @@ public class GameplayBackground implements IRenderable {
 	
 	public GameplayBackground() {
 		for (int i = 0; i < 29; i++) {
-			for (int j = 0; j < 50; j++) {
-				if (ImageIndicater[i][j] == 0) background[i][j] = ImageBox0;
-				else if (ImageIndicater[i][j] == 1) background[i][j] = ImageBox1;
-				else background[i][j] = ImageBox2;
-			}
-		}
+            for (int j = 0; j < 50; j++) {
+                if (ImageIndicater[i][j] == 0) background[i][j] = ImageBox0;
+                else if (ImageIndicater[i][j] == 1) background[i][j] = ImageBox1;
+                else background[i][j] = ImageBox2;
+            }
+        }
 	}
 	
 	public Image[][] getBackground(){
@@ -59,10 +59,10 @@ public class GameplayBackground implements IRenderable {
 	
 	public void draw(GraphicsContext gc) {
 		for (int i = 0; i < 29; i++) {
-			for (int j = 0; j < 50; j++) {
-				gc.drawImage(background[i][j],i*20,j*20,20,20);
-			}
-		}
+            for (int j = 0; j < 50; j++) {
+                gc.drawImage(background[i][j], j * 20, i * 20, 20, 20);
+            }
+        }
 	}
 	
 	public int getZ() {

@@ -1,5 +1,7 @@
 package game.controller;
 
+import game.object.GameplayBackground;
+import game.object.GridBox;
 import input.InputUtility;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -9,16 +11,31 @@ import sharedObject.IRenderable;
 import sharedObject.RenderableHolder;
 
 public class GameCanvas extends Canvas{
+	private boolean isBackgroundDrawn = false;
+	
 	public GameCanvas(int width, int height) {
 		super(width, height);
 		this.setVisible(true);
+		this.setFocusTraversable(true);
 		//addListerner();
 	}
 	
 	public void paintComponent() {
 		GraphicsContext gc = this.getGraphicsContext2D();
-		gc.setFill(Color.BLACK);
-		for (IRenderable entity : RenderableHolder.getInstance().getEntities()) entity.draw(gc);
+        if (!isBackgroundDrawn) {
+            for (IRenderable entity : RenderableHolder.getInstance().getEntities()) {
+                if (entity instanceof GameplayBackground) {
+                    entity.draw(gc);
+                }
+            }
+            isBackgroundDrawn = true;
+        }
+
+        for (IRenderable entity : RenderableHolder.getInstance().getEntities()) {
+            if (entity instanceof GridBox) {
+                entity.draw(gc);
+            }
+        }
 	}
 	
 	public void addListerner() {
