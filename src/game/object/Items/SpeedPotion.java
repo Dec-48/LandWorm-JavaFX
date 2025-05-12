@@ -63,7 +63,7 @@ public class SpeedPotion extends Item implements Interactable {
 		} else {
 			if (p.getSpeed() > 10) {
 				// do nothing
-			} else if (InputUtility.getKeyPressed().contains(KeyCode.P)) {
+			} else {
 				this.setPosition(null);
 				this.isVisible = false;
 				this.useEffect(p);

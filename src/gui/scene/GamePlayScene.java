@@ -32,7 +32,7 @@ public class GamePlayScene extends StackPane implements ChangeableScene{
 	private GameCanvas gameCanvas;
 	private HBox hboxCanvas;
 	private HBox timeLeftPane;
-	private int timeLeft = 10;
+	private int timeLeft = 60;
 	private int remainingTime;
 	private Label timeShow;
 	private ResultPane resultPane = ResultPane.getInstance();
@@ -69,7 +69,7 @@ public class GamePlayScene extends StackPane implements ChangeableScene{
                 remainingTime = timeLeft - elapsedSeconds;
                 timeShow.setText(Integer.toString(remainingTime) + " s");
                 
-				GameController.getInstance().update();
+				GameController.getInstance().update(elapsedSeconds);
 				gameCanvas.paintComponent(); 	
 				
 				if (remainingTime <= 0) {
