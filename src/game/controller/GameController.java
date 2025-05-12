@@ -15,6 +15,7 @@ import game.object.Player;
 import game.object.PlayerState;
 import game.object.Position;
 import game.object.gridState;
+import game.object.Items.Coin;
 import game.object.Items.SpeedPotion;
 import input.InputUtility;
 import javafx.scene.input.KeyCode;
@@ -30,6 +31,7 @@ public class GameController {
 	private Player playerA = new Player(movingKeyA);
 	private Player playerB = new Player(movingKeyB); 
 	private ArrayList<SpeedPotion> speedPotions = new ArrayList<SpeedPotion>();
+	private ArrayList<Coin> coins = new ArrayList<Coin>();
 	private GridBox[][] grid = new GridBox[30][50];
 	private int frameCount = 0;
 	private int maxPotion = 4;
@@ -75,10 +77,17 @@ public class GameController {
 		RenderableHolder.getInstance().add(playerA);
 		RenderableHolder.getInstance().add(playerB);
 		ArrayList<Position> randPotionPos = new ArrayList<Position>();
+		ArrayList<Position> randCoinPos = new ArrayList<Position>();
 		for (int i = 0; i < maxPotion; ) {
 			Position posRand = new Position(ThreadLocalRandom.current().nextInt(1, 29), ThreadLocalRandom.current().nextInt(1, 49));
 			if (randPotionPos.contains(posRand)) continue;
 			randPotionPos.add(posRand);
+			i++;
+		}
+		for (int i = 0; i < 5; ) {
+			Position posRand = new Position(ThreadLocalRandom.current().nextInt(1, 29), ThreadLocalRandom.current().nextInt(1, 49));
+			if (randPotionPos.contains(posRand) || randCoinPos.contains(posRand)) continue;
+			randCoinPos.add(posRand);
 			i++;
 		}
 		for (Position pos : randPotionPos) {
@@ -87,6 +96,13 @@ public class GameController {
 			sp.setZ(3);
 			speedPotions.add(sp);
 			RenderableHolder.getInstance().add(sp);
+		}
+		for (Position pos : randCoinPos) {
+			Coin c = new Coin(pos);
+			c.setVisible(true);
+			c.setZ(3);
+			coins.add(c);
+			RenderableHolder.getInstance().add(c);
 		}
 		///////////////////////
 	}
@@ -109,19 +125,37 @@ public class GameController {
 		playerB.addCurrentTrail(grid[Brow][Bcol]);
 		for (SpeedPotion sp : speedPotions) {
 			if (!sp.isVisible() || sp.getPosition() == null) {
-				
+				//do nothing
 			} else {
 				if (playerA.getPosition().equals(sp.getPosition())) {
 					sp.pick(playerA);
 				}
 			}
 		}
+		for (Coin c : coins) {
+			if (!c.isVisible() || c.getPosition() == null) {
+				//do nothing
+			} else {
+				if (playerA.getPosition().equals(c.getPosition())) {
+					c.pick(playerA);
+				}
+			}
+		}
 		for (SpeedPotion sp : speedPotions) {
 			if (!sp.isVisible() || sp.getPosition() == null) {
-				
+				//do nothing
 			} else {
 				if (playerB.getPosition().equals(sp.getPosition())) {
 					sp.pick(playerB);
+				}
+			}
+		}
+		for (Coin c : coins) {
+			if (!c.isVisible() || c.getPosition() == null) {
+				//do nothing
+			} else {
+				if (playerB.getPosition().equals(c.getPosition())) {
+					c.pick(playerB);
 				}
 			}
 		}
@@ -160,6 +194,23 @@ public class GameController {
 				// behavior!!!!
 				playerA.getCurrentTrail().clear();
 			}
+		} else { // kill other
+			int row = playerB.getprevOutPosition().row;
+			int col = playerB.getprevOutPosition().col;
+			playerB.setPosition(new Position(row, col));
+			for (GridBox gb : playerB.getCurrentTrail()) {
+				if (gb.getState() == gridState.Trail) {
+					gb.setColor(GridBox.blankColor);
+					gb.setState(gridState.Blank);
+				}
+			}
+			grid[Arow][Acol].setState(gridState.Trail);
+			grid[Arow][Acol].setColor(a_TrailColor);
+			playerA.addCurrentTrail(grid[Arow][Acol]);
+			
+			grid[Brow][Bcol].setState(gridState.Blank);
+			grid[Brow][Bcol].setColor(GridBox.blankColor);
+			playerB.getCurrentTrail().clear();
 		}
 
 		int paintStateB = grid[Brow][Bcol].paintTrail(b_TrailColor);
@@ -194,6 +245,22 @@ public class GameController {
 				playerB.setPosition(new Position(row, col));
 				playerB.getCurrentTrail().clear();
 			}
+		} else {
+			int row = playerA.getprevOutPosition().row;
+			int col = playerA.getprevOutPosition().col;
+			playerA.setPosition(new Position(row, col));
+			for (GridBox gb : playerA.getCurrentTrail()) {
+				if (gb.getState() == gridState.Trail) {
+					gb.setColor(GridBox.blankColor);
+					gb.setState(gridState.Blank);
+				}
+			}
+			grid[Brow][Bcol].setState(gridState.Trail);
+			grid[Brow][Bcol].setColor(b_TrailColor);
+			playerB.addCurrentTrail(grid[Brow][Bcol]);
+			grid[Arow][Acol].setColor(GridBox.blankColor);
+			grid[Arow][Acol].setState(gridState.Blank);
+			playerA.getCurrentTrail().clear();
 		}
 	}
 

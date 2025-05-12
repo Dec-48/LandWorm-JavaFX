@@ -20,6 +20,7 @@ public class Player extends GameObject {
 	private Position prevOutPosition;
 	private List<GridBox> currentTrail;
 	private ArrayList<KeyCode> movingKey;
+	public int score = 0;
 
 
 	public Player(KeyCode[] movingKey) {
