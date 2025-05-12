@@ -38,7 +38,7 @@ public class AudioManager {
         bgm.play();
     }
 
-    public static void stopBGM() {
+    public static void stopBGM() { 
         if (bgm != null) {
             bgm.stop();
             bgm = null;

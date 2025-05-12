@@ -21,7 +21,7 @@ public class SceneManager {
 	}
 	
 	public static SceneManager getInstance() {
-		if (instance == null) {
+		if (instance == null) { 
 			throw new IllegalStateException("SceneManager has not been initilized with a Stage yet.");
 		}
 		return instance;

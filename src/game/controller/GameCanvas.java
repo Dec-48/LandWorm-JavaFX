@@ -16,9 +16,9 @@ public class GameCanvas extends Canvas{
 		this.setVisible(true);
 		//addListerner();
 	}
-	
+	 
 	public void paintComponent() {
-		gc.clearRect(0,0,1000,580);
+		gc.clearRect(0,0,1000,600);
 		gc.setFill(Color.BLACK);
 		for (IRenderable entity : RenderableHolder.getInstance().getEntities()) entity.draw(gc);
 	}

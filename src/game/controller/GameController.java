@@ -28,9 +28,9 @@ public class GameController {
 	private KeyCode[] movingKeyA = { KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D };
 	private KeyCode[] movingKeyB = { KeyCode.UP, KeyCode.LEFT, KeyCode.DOWN, KeyCode.RIGHT };
 	private Player playerA = new Player(movingKeyA);
-	private Player playerB = new Player(movingKeyB);
+	private Player playerB = new Player(movingKeyB); 
 	private ArrayList<SpeedPotion> speedPotions = new ArrayList<SpeedPotion>();
-	private GridBox[][] grid = new GridBox[29][50];
+	private GridBox[][] grid = new GridBox[30][50];
 	private int frameCount = 0;
 	private int maxPotion = 4;
 	private Color a_color = Color.DARKRED;
@@ -43,7 +43,7 @@ public class GameController {
 		playerA.setColor(a_color);
 		playerB.setColor(b_color);
 
-		for (int i = 0; i < 29; i++) {
+		for (int i = 0; i < 30; i++) {
 			for (int j = 0; j < 50; j++) {
 				grid[i][j] = new GridBox(i, j);
 			}
@@ -83,7 +83,7 @@ public class GameController {
 		RenderableHolder.getInstance().add(sp);
 		// ArrayList<Position> poss = new ArrayList<Position>();
 		// for (int i = 0; i < 4;) {
-		// int rowRand = ThreadLocalRandom.current().nextInt(1, 29); // [1, 29)
+		// int rowRand = ThreadLocalRandom.current().nextInt(1, 30); // [1, 30)
 		// int colRand = ThreadLocalRandom.current().nextInt(1, 50); // [1, 50)
 		// Position newPos = new Position(rowRand, colRand);
 		// if (!poss.contains(newPos)) {
@@ -197,8 +197,8 @@ public class GameController {
 	private ArrayList<Position> fillSpace(List<GridBox> currentTrail, Paint trailColor) { // XXX: still have bug when too
 																																												// zig zag path
 		ArrayList<Position> ret = new ArrayList<Position>();
-		Boolean vis[][] = new Boolean[29][50];
-		for (int i = 0; i < 29; i++) {
+		Boolean vis[][] = new Boolean[30][50];
+		for (int i = 0; i < 30; i++) {
 			for (int j = 0; j < 50; j++) {
 				vis[i][j] = false;
 			}
@@ -317,7 +317,7 @@ public class GameController {
 			for (int d = -1; d <= 1; d += 2) {
 				int nowRow = curRow + d;
 				int nowCol = curCol + d;
-				if (0 <= nowRow && nowRow < 29) {
+				if (0 <= nowRow && nowRow < 30) {
 					if (grid[nowRow][curCol].getColor() == trailColor) {
 						dirFlag[1 + d][0] += 1;
 						dirFlag[1 + d][1] += 1;
@@ -367,7 +367,7 @@ public class GameController {
 					int newRow = cur.row + d;
 					int newCol = cur.col + d;
 					Position newPos;
-					if (0 <= newRow && newRow < 29) {
+					if (0 <= newRow && newRow < 30) {
 						if (!vis[newRow][cur.col] && grid[newRow][cur.col].getColor() != trailColor) {
 							newPos = new Position(newRow, cur.col);
 							vis[newRow][cur.col] = true;

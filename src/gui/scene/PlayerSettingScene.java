@@ -157,8 +157,7 @@ public class PlayerSettingScene extends StackPane implements ChangeableScene {
 												+ "worm/" + GameController.getInstance().getB_stringColor() + "wormH1.png")
 										.toString()), 0, 0, 200, 200);
 
-					});
-					
+					});	
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -326,11 +325,9 @@ public class PlayerSettingScene extends StackPane implements ChangeableScene {
 		});
 		
 	}
-	
+	 
     public void start(SceneManager sceneManager) {
         Scene scene = new Scene(this, 1000, 600);
-        
-//		GameController.getInstance().initialGame();
 		
         sceneManager.getStage().setScene(scene);
         sceneManager.getStage().show();
@@ -338,7 +335,7 @@ public class PlayerSettingScene extends StackPane implements ChangeableScene {
     }
 	
 	public void stop(SceneManager sceneManager) {
-		running = false;
+		running = false; 
 		AudioManager.stopBGM();
 		instance = null;
 	}
