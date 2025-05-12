@@ -50,7 +50,7 @@ public class Dec48Main extends Application{
 		AnimationTimer animation = new AnimationTimer() {
 			@Override
 			public void handle(long now) {
-				gameController.update();
+				gameController.update(10);
 				gameCanvas.paintComponent(); 				
 			}
 		};

@@ -42,7 +42,6 @@ public class GameController {
 	public void initialGame() { // TODO : this need to rename to initialGame ???
 		playerA.setColor(a_color);
 		playerB.setColor(b_color);
-
 		for (int i = 0; i < 30; i++) {
 			for (int j = 0; j < 50; j++) {
 				grid[i][j] = new GridBox(i, j);
@@ -75,53 +74,57 @@ public class GameController {
 
 		RenderableHolder.getInstance().add(playerA);
 		RenderableHolder.getInstance().add(playerB);
-
-		SpeedPotion sp = new SpeedPotion(new Position(4, 4));
-		sp.setVisible(true);
-		sp.setZ(3);
-		speedPotions.add(sp);
-		RenderableHolder.getInstance().add(sp);
-		// ArrayList<Position> poss = new ArrayList<Position>();
-		// for (int i = 0; i < 4;) {
-		// int rowRand = ThreadLocalRandom.current().nextInt(1, 30); // [1, 30)
-		// int colRand = ThreadLocalRandom.current().nextInt(1, 50); // [1, 50)
-		// Position newPos = new Position(rowRand, colRand);
-		// if (!poss.contains(newPos)) {
-		// i++;
-		// poss.add(newPos);
-		// }
-		// }
-		// int idx = 0;
-		// for (Position pos : poss) {
-		// speedPotions[idx] = new SpeedPotion(pos);
-		// speedPotions[idx].setVisible(false);
-		// idx++;
-		// }
+		ArrayList<Position> randPotionPos = new ArrayList<Position>();
+		for (int i = 0; i < maxPotion; ) {
+			Position posRand = new Position(ThreadLocalRandom.current().nextInt(1, 29), ThreadLocalRandom.current().nextInt(1, 49));
+			if (randPotionPos.contains(posRand)) continue;
+			randPotionPos.add(posRand);
+			i++;
+		}
+		for (Position pos : randPotionPos) {
+			SpeedPotion sp = new SpeedPotion(pos);
+			sp.setVisible(false);
+			sp.setZ(3);
+			speedPotions.add(sp);
+			RenderableHolder.getInstance().add(sp);
+		}
 		///////////////////////
 	}
 
-	public void update() {
-		// frameCount++;
-		// if (frameCount % 1000 == 0) {
-		//
-		// }
+	public void update(int currentTime) {
+		if ((currentTime + 1) % 10 == 0) {
+			int idx = currentTime / 10;
+			if (idx < speedPotions.size()) {			
+				SpeedPotion sp = speedPotions.get(idx);
+				if (sp.getPosition() != null) sp.setVisible(true);
+			}
+		}
 		playerA.move(); // move playerA along the direction from inputUtility
 		playerB.move(); // move playerB along the direction from inputUtility
 		int Arow = playerA.getPosition().row;
 		int Acol = playerA.getPosition().col;
-		if (InputUtility.getKeyPressed().contains(KeyCode.P)) {
-			for (SpeedPotion sp : speedPotions) {
-				if (!sp.isVisible() || sp.getPosition() == null)
-					continue;
-				if (sp.getPosition().equals(playerA.getPosition())) {
-					sp.pick(playerA);
-				}
-			}
-		}
 		playerA.addCurrentTrail(grid[Arow][Acol]);
 		int Brow = playerB.getPosition().row;
 		int Bcol = playerB.getPosition().col;
 		playerB.addCurrentTrail(grid[Brow][Bcol]);
+		for (SpeedPotion sp : speedPotions) {
+			if (!sp.isVisible() || sp.getPosition() == null) {
+				
+			} else {
+				if (playerA.getPosition().equals(sp.getPosition())) {
+					sp.pick(playerA);
+				}
+			}
+		}
+		for (SpeedPotion sp : speedPotions) {
+			if (!sp.isVisible() || sp.getPosition() == null) {
+				
+			} else {
+				if (playerB.getPosition().equals(sp.getPosition())) {
+					sp.pick(playerB);
+				}
+			}
+		}
 		// TODO: modify this method in order to handle double line trail!!!
 		int paintStateA = grid[Arow][Acol].paintTrail(a_TrailColor); // XXX here!!!
 		if (paintStateA == 0) {
@@ -203,10 +206,6 @@ public class GameController {
 				vis[i][j] = false;
 			}
 		}
-		// Map<Integer, TreeSet<Integer>> row = new HashMap<Integer,
-		// TreeSet<Integer>>();
-		// Map<Integer, TreeSet<Integer>> col = new HashMap<Integer,
-		// TreeSet<Integer>>();
 		Map<Integer, ArrayList<Integer>> row = new HashMap<Integer, ArrayList<Integer>>();
 		Map<Integer, ArrayList<Integer>> col = new HashMap<Integer, ArrayList<Integer>>();
 		for (GridBox gb : currentTrail) {
@@ -215,7 +214,6 @@ public class GameController {
 			if (row.containsKey(i)) {
 				row.get(i).add(j);
 			} else {
-				// TreeSet<Integer> s = new TreeSet<Integer>(); s.add(j);
 				ArrayList<Integer> s = new ArrayList<Integer>();
 				s.add(j);
 				row.put(i, s);
@@ -223,7 +221,6 @@ public class GameController {
 			if (col.containsKey(j)) {
 				col.get(j).add(i);
 			} else {
-				// TreeSet<Integer> s = new TreeSet<Integer>(); s.add(i);
 				ArrayList<Integer> s = new ArrayList<Integer>();
 				s.add(i);
 				col.put(j, s);
@@ -231,15 +228,6 @@ public class GameController {
 		}
 		for (Integer i : row.keySet()) {
 			if (row.get(i).size() > 1) {
-				// if (row.get(i).getLast() - row.get(i).getFirst() <= 1) continue;
-				// for (int j = row.get(i).getFirst() + 1; j <= row.get(i).getLast() - 1; j++) {
-				// if (grid[i][j].getColor() != trailColor) {
-				// if (!vis[i][j]) {
-				// vis[i][j] = true;
-				// ret.add(new Position(i, j));
-				// }
-				// }
-				// }
 				Integer[] copy = row.get(i).toArray(new Integer[0]);
 				Arrays.sort(copy);
 				ArrayList<Integer> tmp = new ArrayList<Integer>();
@@ -255,11 +243,10 @@ public class GameController {
 					int sJ = tmp.get(idx);
 					int eJ = tmp.get(idx + 1);
 					for (int j = sJ; j <= eJ; j++) {
-						if (grid[i][j].getColor() != trailColor && grid[i][j].getState() != gridState.SafeZone) {
-							if (!vis[i][j]) {
-								vis[i][j] = true;
-								ret.add(new Position(i, j));
-							}
+						if (grid[i][j].getColor() == trailColor && grid[i][j].getState() == gridState.SafeZone) continue;
+						if (!vis[i][j]) {
+							vis[i][j] = true;
+							ret.add(new Position(i, j));
 						}
 					}
 				}
@@ -267,15 +254,6 @@ public class GameController {
 		}
 		for (Integer j : col.keySet()) {
 			if (col.get(j).size() > 1) {
-				// if (col.get(j).getLast() - col.get(j).getFirst() <= 1) continue;
-				// for (int i = col.get(j).getFirst() + 1; i <= col.get(j).getLast() - 1; i++) {
-				// if (grid[i][j].getColor() != trailColor) {
-				// if (!vis[i][j]) {
-				// vis[i][j] = true;
-				// ret.add(new Position(i, j));
-				// }
-				// }
-				// }
 				Integer[] copy = col.get(j).toArray(new Integer[0]);
 				Arrays.sort(copy);
 				ArrayList<Integer> tmp = new ArrayList<Integer>();
@@ -291,11 +269,10 @@ public class GameController {
 					int sI = tmp.get(idx);
 					int eI = tmp.get(idx + 1);
 					for (int i = sI; i <= eI; i++) {
-						if (grid[i][j].getColor() != trailColor && grid[i][j].getState() != gridState.SafeZone) {
-							if (!vis[i][j]) {
-								vis[i][j] = true;
-								ret.add(new Position(i, j));
-							}
+						if (grid[i][j].getColor() == trailColor && grid[i][j].getState() == gridState.SafeZone) continue;
+						if (!vis[i][j]) {
+							vis[i][j] = true;
+							ret.add(new Position(i, j));
 						}
 					}
 				}
@@ -351,8 +328,6 @@ public class GameController {
 			}
 		}
 		for (Position pos : ret) {
-			// if (vis[pos.row][pos.col] || grid[pos.row][pos.col].getState() ==
-			// gridState.SafeZone) continue;
 			if (grid[pos.row][pos.col].getState() == gridState.SafeZone
 					&& grid[pos.row][pos.col].getColor() == trailColor)
 				continue;
