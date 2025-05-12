@@ -11,13 +11,13 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 
 public class ResultPane extends VBox{
 	private static ResultPane instance;
-//	private Player winner = GameController.getInstance().getWinnerPlayer();
-//	private Color winnerColor = winner.getColor();  waiting for Tawan logic to return the winner Player
-	private Color winnerColor = Color.RED;
+	private Player winner;
+	private Paint winnerColor;
 	private String stringColor;
 	private Image[] wormImages = new Image[3];
 	private Canvas winnerWorm;
@@ -34,6 +34,8 @@ public class ResultPane extends VBox{
 		this.setAlignment(Pos.TOP_CENTER);
 		this.setSpacing(36);
 		this.setPadding(new Insets(100,0,0,0));
+		winner = GameController.getInstance().getWinnerPlayer();
+		winnerColor = winner.getColor();
 		
 		initailizeWinnerImage();
 		initializeWinnerWormPane();
@@ -96,7 +98,7 @@ public class ResultPane extends VBox{
 ;	}
 	
 	private void initializeResultText() {
-		resultText = new Label("The Winner is " + stringColor +" Player!!");
+		resultText = new Label("The Winner is the " + stringColor +" Player!!");
 		Font font = Font.loadFont(getClass().getResourceAsStream("/Font/PressStart2P-Regular.ttf"), 20);
 		resultText.setFont(font);
         resultText.setTextFill(Color.WHITE);
@@ -107,5 +109,9 @@ public class ResultPane extends VBox{
 			instance = new ResultPane();
 		}
 		return instance;
+	}
+	
+	public static void resetResultPane() {
+		instance = null;
 	}
 }

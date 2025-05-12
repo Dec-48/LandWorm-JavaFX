@@ -364,7 +364,7 @@ public class GameController {
 				if (0 <= nowRow && nowRow < 30) {
 					if (grid[nowRow][curCol].getColor() == trailColor) {
 						dirFlag[1 + d][0] += 1;
-						dirFlag[1 + d][1] += 1;
+						dirFlag[1 + d][1] += 1; 
 						dirFlag[1 + d][2] += 1;
 					}
 				}

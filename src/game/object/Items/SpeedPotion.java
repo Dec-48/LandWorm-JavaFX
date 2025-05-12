@@ -1,6 +1,7 @@
 package game.object.Items;
 
 
+import Manager.AudioManager;
 import game.object.Item;
 import game.object.Player;
 import game.object.Position;
@@ -23,26 +24,27 @@ public class SpeedPotion extends Item implements Interactable {
 		setPosition(pos);
 		this.row = pos.row;
 		this.col = pos.col;
-	}
+	} 
 
 	@Override
 	public void draw(GraphicsContext gc) {
-
+		float offset = (35-20)/2;
 		if (!isVisible) {
 			// do nothing
 		} else {
 			if (0 <= poCount && poCount <= 14) {
-				gc.drawImage(Image1, col * 20, row * 20, 20, 20);
+				gc.drawImage(Image1, col * 20-offset, row * 20-offset, 35, 35);
 			} else if (14 < poCount && poCount <= 29) {
-				gc.drawImage(Image2, col * 20, row * 20, 20, 20);
+				gc.drawImage(Image2, col * 20-offset, row * 20-offset, 35, 35);
 			} else if (poCount > 29)
 				poCount = 0;
-			poCount++;
+			poCount++; 
 		}
 	}
 
 	@Override
 	public void useEffect(Player p) {
+		AudioManager.playEffect("Audio/ItemSelectEffect.mp3");
 		new Thread(() -> { // XXX avoid this
 			Platform.runLater(() -> p.setSpeed(17));
 			try {
