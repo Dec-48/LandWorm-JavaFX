@@ -32,18 +32,21 @@ public class GamePlayScene extends StackPane implements ChangeableScene{
 	private GameCanvas gameCanvas;
 	private HBox hboxCanvas;
 	private HBox timeLeftPane;
-	private int timeLeft = 60;
-	private int remainingTime;
+	private int timeLeft = 20;
+	private int remainingTime; 
 	private Label timeShow;
-	private ResultPane resultPane = ResultPane.getInstance();
+	private ResultPane resultPane;
 	private boolean isCountdown = false;
+	private final double MAX_FPS = 120;
+	private final long TARGET_NANOSECONDS = (long) (1_000_000_000.0 / MAX_FPS);
+	private long lastUpdateTime = 0;
 	
 	public GamePlayScene() {
 		super();
 		this.setPrefWidth(1000);
 		this.setPrefHeight(600);
 				
-		gameCanvas = new GameCanvas(1000, 600);  ////////////////
+		gameCanvas = new GameCanvas(1000, 600); 
 		gameCanvas.addListerner();
 		hboxCanvas = new HBox();
 		hboxCanvas.setPadding(new Insets(40,0,0,0));
@@ -59,26 +62,30 @@ public class GamePlayScene extends StackPane implements ChangeableScene{
 		 
 		long startTime = System.nanoTime();
 		
-		remainingTime = timeLeft; // ตั้งค่าเริ่มต้นเป็น 10
-	    timeShow.setText(Integer.toString(remainingTime)); // แสดงค่าเริ่มต้นใน Label
+		remainingTime = timeLeft; 
+	    timeShow.setText(Integer.toString(remainingTime)); 
 	    
 		animation = new AnimationTimer() {
 			@Override
 			public void handle(long now) {
-                int elapsedSeconds = (int) ((now - startTime) / 1_000_000_000L); // แปลงนาโนเซ็กนด์เป็นวินาที
-                remainingTime = timeLeft - elapsedSeconds;
-                timeShow.setText(Integer.toString(remainingTime) + " s");
-                
-				GameController.getInstance().update(elapsedSeconds);
-				gameCanvas.paintComponent(); 	
-				
-				if (remainingTime <= 0) {
-	                this.stop();
-	                gameTimesUp();
-	            } else if (remainingTime == 4 && !isCountdown) {
-	            	AudioManager.playEffect("Audio/lastSecondCountdown.mp3");
-	            	isCountdown = true;
-	            }
+				if (now - lastUpdateTime >= TARGET_NANOSECONDS) {
+
+					int elapsedSeconds = (int) ((now - startTime) / 1_000_000_000L); // แปลงนาโนเซ็กนด์เป็นวินาที
+					remainingTime = timeLeft - elapsedSeconds;
+					timeShow.setText(Integer.toString(remainingTime) + " s");
+
+					GameController.getInstance().update(elapsedSeconds);
+					gameCanvas.paintComponent();
+
+					if (remainingTime <= 0) {
+						this.stop();
+						gameTimesUp();
+					} else if (remainingTime == 4 && !isCountdown) {
+						AudioManager.playEffect("Audio/lastSecondCountdown.mp3");
+						isCountdown = true;
+					}
+					lastUpdateTime = now;
+				}
 			}
 		};
 		animation.start();
@@ -94,8 +101,9 @@ public class GamePlayScene extends StackPane implements ChangeableScene{
 		hbox.getChildren().add(backButton); 
 		hbox.setPadding(new Insets(0,930,15,15));
 		
-		hbox.setOnMouseEntered(e -> {
+		backButton.setOnMouseEntered(e -> {
 			backButton.setCursor(Cursor.HAND);
+			backButton.getGraphicsContext2D().clearRect(0, 0,60,60);
 			backButton.getGraphicsContext2D().drawImage(redBtn,0,0,60,60);
 		});
 		
@@ -135,6 +143,7 @@ public class GamePlayScene extends StackPane implements ChangeableScene{
 	}
 	
 	private void gameTimesUp() {
+		resultPane = ResultPane.getInstance();
 		this.getChildren().add(resultPane);
 		AudioManager.playEffect("Audio/gameFinish.wav");
 		new Thread( () ->{
@@ -160,11 +169,12 @@ public class GamePlayScene extends StackPane implements ChangeableScene{
 	
 	public void stop(SceneManager sceneManager) {
 		AudioManager.stopBGM();
-		animation.stop(); //
+		animation.stop(); 
 		instance = null;
 		GameController.stopGameController();
 		RenderableHolder.getInstance().clearHolder();
 		gameCanvas = null;
+		ResultPane.resetResultPane();
 	}
 
 	public static GamePlayScene getInstance() {

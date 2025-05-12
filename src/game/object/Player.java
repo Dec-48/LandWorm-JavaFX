@@ -18,7 +18,7 @@ public class Player extends GameObject {
 	private PlayerState playerState = PlayerState.In;
 	private String direction; // TODO : could be Enum
 	private Position prevOutPosition;
-	private List<GridBox> currentTrail;
+	private List<GridBox> currentTrail; 
 	private ArrayList<KeyCode> movingKey;
 	public int score = 0;
 
@@ -165,8 +165,8 @@ public class Player extends GameObject {
 	
 	@Override
 	public void draw(GraphicsContext gc) {
-		if (wormCount == 60) wormCount = 0;
-		int idx = wormCount / 15; 
+		if (wormCount == 16) wormCount = 0;
+		int idx = wormCount / 4; 
 		boolean flip = (this.direction == "DOWN" || this.direction == "LEFT");
 		int offset = (40-20)/2;
 		if (this.direction == "UP" || this.direction == "DOWN") {
