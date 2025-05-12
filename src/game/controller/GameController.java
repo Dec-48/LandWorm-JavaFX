@@ -505,6 +505,23 @@ public class GameController {
 		}
 		return instance;
 	}
+	
+	public Player getWinnerPlayer() {
+		for (int i = 0; i < 30; i++) {
+			for (int j = 0; j < 50; j++) {
+				if (grid[i][j].getColor() == a_TrailColor) {
+					playerA.score += 1;
+				} else if (grid[i][j].getColor() == b_TrailColor) {
+					playerB.score += 1;
+				}
+			}
+		}
+		if (playerA.score >= playerB.score) {
+			return playerA;
+		} else {
+			return playerB;
+		}
+	}
 
 	public static void stopGameController() {
 		instance = null;
