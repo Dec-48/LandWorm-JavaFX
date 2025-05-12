@@ -100,7 +100,7 @@ public class ButtonPane extends VBox{
 		});
 		
 		btn.setOnMouseClicked(e -> {
-			AudioManager.playEffect("Audio/ClickEffect.mp3");
+			AudioManager.playEffect("Audio/ClickEffect.mp3"); 
 			
 			MainMenuScene.getInstance().getChildren().remove(1);
 			MainMenuScene.getInstance().getChildren().addAll(GameSettingPane.getInstance());

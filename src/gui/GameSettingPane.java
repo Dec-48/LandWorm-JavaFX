@@ -74,7 +74,7 @@ public class GameSettingPane extends StackPane{
         
         bgmSlider.getStyleClass().add("custom-slider");
 		
-		bgmSettingPane.getChildren().addAll(bgmSign,bgmSlider);
+		bgmSettingPane.getChildren().addAll(bgmSign,bgmSlider); 
 	}
 	
 	private void initializeEffectSettingPane() {
