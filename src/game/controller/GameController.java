@@ -3,6 +3,7 @@ package game.controller;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -79,16 +80,16 @@ public class GameController {
 		ArrayList<Position> randPotionPos = new ArrayList<Position>();
 		ArrayList<Position> randCoinPos = new ArrayList<Position>();
 		for (int i = 0; i < maxPotion;) {
-			Position posRand = new Position(ThreadLocalRandom.current().nextInt(1, 29),
-					ThreadLocalRandom.current().nextInt(1, 49));
+			Position posRand = new Position(ThreadLocalRandom.current().nextInt(2, 27),
+					ThreadLocalRandom.current().nextInt(2, 47));
 			if (randPotionPos.contains(posRand))
 				continue;
 			randPotionPos.add(posRand);
 			i++;
 		}
 		for (int i = 0; i < 5;) {
-			Position posRand = new Position(ThreadLocalRandom.current().nextInt(1, 29),
-					ThreadLocalRandom.current().nextInt(1, 49));
+			Position posRand = new Position(ThreadLocalRandom.current().nextInt(2, 27),
+					ThreadLocalRandom.current().nextInt(2, 47));
 			if (randPotionPos.contains(posRand) || randCoinPos.contains(posRand))
 				continue;
 			randCoinPos.add(posRand);
@@ -175,7 +176,7 @@ public class GameController {
 				playerA.setPlayerState(PlayerState.In);
 				for (GridBox gb : playerA.getCurrentTrail())
 					gb.setState(gridState.SafeZone);
-				ArrayList<Position> spaces = this.fillSpace(playerA.getCurrentTrail(), a_TrailColor);
+				ArrayList<Position> spaces = this.fillSpace(a_TrailColor);
 				for (Position pos : spaces) {
 					grid[pos.row][pos.col].setColor(a_TrailColor);
 					grid[pos.row][pos.col].setState(gridState.SafeZone);
@@ -229,7 +230,7 @@ public class GameController {
 				playerB.setPlayerState(PlayerState.In);
 				for (GridBox gb : playerB.getCurrentTrail())
 					gb.setState(gridState.SafeZone);
-				ArrayList<Position> spaces = this.fillSpace(playerB.getCurrentTrail(), b_TrailColor);
+				ArrayList<Position> spaces = this.fillSpace(b_TrailColor);
 				for (Position pos : spaces) {
 					grid[pos.row][pos.col].setState(gridState.SafeZone);
 					grid[pos.row][pos.col].setColor(b_TrailColor);
@@ -270,174 +271,48 @@ public class GameController {
 			playerA.getCurrentTrail().clear();
 		}
 	}
-
-	private ArrayList<Position> fillSpace(List<GridBox> currentTrail, Paint trailColor) {
-		// zig zag path
-		ArrayList<Position> ret = new ArrayList<Position>();
-		Boolean vis[][] = new Boolean[30][50];
+	
+	private ArrayList<Position> fillSpace(Paint trailColor) {
+		boolean can[][] = new boolean[30][50];
+		boolean flag[][] = new boolean[30][50];
 		for (int i = 0; i < 30; i++) {
 			for (int j = 0; j < 50; j++) {
-				vis[i][j] = false;
-			}
-		}
-		Map<Integer, ArrayList<Integer>> row = new HashMap<Integer, ArrayList<Integer>>();
-		Map<Integer, ArrayList<Integer>> col = new HashMap<Integer, ArrayList<Integer>>();
-		for (GridBox gb : currentTrail) {
-			Integer i = gb.getPosition().row;
-			Integer j = gb.getPosition().col;
-			if (row.containsKey(i)) {
-				row.get(i).add(j);
-			} else {
-				ArrayList<Integer> s = new ArrayList<Integer>();
-				s.add(j);
-				row.put(i, s);
-			}
-			if (col.containsKey(j)) {
-				col.get(j).add(i);
-			} else {
-				ArrayList<Integer> s = new ArrayList<Integer>();
-				s.add(i);
-				col.put(j, s);
-			}
-		}
-		for (Integer i : row.keySet()) {
-			if (row.get(i).size() > 1) {
-				Integer[] copy = row.get(i).toArray(new Integer[0]);
-				Arrays.sort(copy);
-				ArrayList<Integer> tmp = new ArrayList<Integer>();
-				tmp.add(copy[0]);
-				for (int idx = 1; idx < copy.length - 1; idx++) {
-					if (copy[idx + 1] - copy[idx] == 1) {
-					} else {
-						tmp.add(copy[idx]);
-					}
-				}
-				tmp.add(copy[copy.length - 1]);
-				for (int idx = 0; idx < tmp.size() - 1; idx += 2) {
-					int sJ = tmp.get(idx);
-					int eJ = tmp.get(idx + 1);
-					for (int j = sJ; j <= eJ; j++) {
-						if (grid[i][j].getColor() == trailColor && grid[i][j].getState() == gridState.SafeZone)
-							continue;
-						if (!vis[i][j]) {
-							vis[i][j] = true;
-							ret.add(new Position(i, j));
-						}
-					}
+				flag[i][j] = false;
+				can[i][j] = true;
+				if (grid[i][j].getColor() == trailColor) {
+					can[i][j] = false;
 				}
 			}
 		}
-		for (Integer j : col.keySet()) {
-			if (col.get(j).size() > 1) {
-				Integer[] copy = col.get(j).toArray(new Integer[0]);
-				Arrays.sort(copy);
-				ArrayList<Integer> tmp = new ArrayList<Integer>();
-				tmp.add(copy[0]);
-				for (int idx = 1; idx < copy.length - 1; idx++) {
-					if (copy[idx + 1] - copy[idx] == 1) {
-					} else {
-						tmp.add(copy[idx]);
-					}
-				}
-				tmp.add(copy[copy.length - 1]);
-				for (int idx = 0; idx < tmp.size() - 1; idx += 2) {
-					int sI = tmp.get(idx);
-					int eI = tmp.get(idx + 1);
-					for (int i = sI; i <= eI; i++) {
-						if (grid[i][j].getColor() == trailColor && grid[i][j].getState() == gridState.SafeZone)
-							continue;
-						if (!vis[i][j]) {
-							vis[i][j] = true;
-							ret.add(new Position(i, j));
-						}
-					}
-				}
-			}
-		}
-
-		ArrayList<Position> tmp = new ArrayList<Position>();
-		Integer canditRow = null;
-		Integer canditCol = null;
-		int angleCount = 0;
-		for (GridBox gb : currentTrail) {
-			int dirFlag[][] = new int[3][3];
-			for (int i = 0; i < 3; i++)
-				for (int j = 0; j < 3; j++)
-					dirFlag[i][j] = 0;
-			int curRow = gb.getPosition().row;
-			int curCol = gb.getPosition().col;
-			vis[curRow][curCol] = true;
+		Position startPos = new Position(0, 0);
+		Queue<Position> q = new ArrayDeque<Position>();
+		q.add(startPos);
+		while (!q.isEmpty()) {
+			Position cur = q.remove();
+			if (flag[cur.row][cur.col]) continue;
+			if (!can[cur.row][cur.col]) continue;
+			flag[cur.row][cur.col] = true;
 			for (int d = -1; d <= 1; d += 2) {
-				int nowRow = curRow + d;
-				int nowCol = curCol + d;
-				if (0 <= nowRow && nowRow < 30) {
-					if (grid[nowRow][curCol].getColor() == trailColor) {
-						dirFlag[1 + d][0] += 1;
-						dirFlag[1 + d][1] += 1;
-						dirFlag[1 + d][2] += 1;
-					}
+				int newRow = cur.row + d;
+				int newCol = cur.col + d;
+				if (0 <= newRow && newRow < 30) {
+					if (!flag[newRow][cur.col])
+						q.add(new Position(newRow, cur.col));
 				}
-				if (0 <= nowCol && nowCol < 50) {
-					if (grid[curRow][nowCol].getColor() == trailColor) {
-						dirFlag[0][1 + d] += 1;
-						dirFlag[1][1 + d] += 1;
-						dirFlag[2][1 + d] += 1;
-					}
-				}
-			}
-			for (int di = -1; di <= 1; di += 2) {
-				for (int dj = -1; dj <= 1; dj += 2) {
-					if (dirFlag[1 + di][1 + dj] == 2) {
-						angleCount++;
-						canditRow = curRow + di;
-						canditCol = curCol + dj;
-					}
+				if (0 <= newCol && newCol < 50) {
+					if (!flag[cur.row][newCol])
+						q.add(new Position(cur.row, newCol));
 				}
 			}
 		}
-		if (angleCount == 1) {
-			if (canditRow != null && canditCol != null) {
-				Position toAdd = new Position(canditRow, canditCol);
-				if (!ret.contains(toAdd)) {
-					ret.add(toAdd);
+		ArrayList<Position> ret = new ArrayList<Position>();
+		for (int i = 1; i < 29; i++) {
+			for (int j = 1; j < 49; j++) {
+				if (!flag[i][j]) {
+					ret.add(new Position(i, j));
 				}
 			}
 		}
-		for (Position pos : ret) {
-			if (grid[pos.row][pos.col].getState() == gridState.SafeZone
-					&& grid[pos.row][pos.col].getColor() == trailColor)
-				continue;
-			Queue<Position> q = new ArrayDeque<Position>();
-			q.add(pos);
-			while (!q.isEmpty()) {
-				Position cur = q.remove();
-				if (grid[cur.row][cur.col].getState() == gridState.SafeZone
-						&& grid[cur.row][cur.col].getColor() == trailColor)
-					continue;
-				for (int d = -1; d <= 1; d += 2) {
-					int newRow = cur.row + d;
-					int newCol = cur.col + d;
-					Position newPos;
-					if (0 <= newRow && newRow < 30) {
-						if (!vis[newRow][cur.col] && grid[newRow][cur.col].getColor() != trailColor) {
-							newPos = new Position(newRow, cur.col);
-							vis[newRow][cur.col] = true;
-							tmp.add(newPos);
-							q.add(newPos);
-						}
-					}
-					if (0 <= newCol && newCol < 50) {
-						if (!vis[cur.row][newCol] && grid[cur.row][newCol].getColor() != trailColor) {
-							newPos = new Position(cur.row, newCol);
-							vis[cur.row][newCol] = true;
-							tmp.add(newPos);
-							q.add(newPos);
-						}
-					}
-				}
-			}
-		}
-		ret.addAll(tmp);
 		return ret;
 	}
 
