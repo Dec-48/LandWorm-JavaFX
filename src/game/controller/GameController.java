@@ -134,7 +134,12 @@ public class GameController {
 		int cRow = curPlayer.getPosition().row;
 		int cCol = curPlayer.getPosition().col;
 		curPlayer.addCurrentTrail(grid[cRow][cCol]);
-		
+		int colorCounter = 0;
+		for (int i = 0; i < 30; i++) for (int j = 0; j < 50; j++) if (grid[i][j].getColor() == curPlayer.getColor()) colorCounter++;
+		if (colorCounter == 1) {
+			grid[cRow][cCol].setColor(curPlayer.getColor());
+			grid[cRow][cCol].setState(gridState.SafeZone);
+		}
 		for (SpeedPotion sp : speedPotions) {
 			if (!sp.isVisible() || sp.getPosition() == null) continue;
 			if (curPlayer.getPosition().equals(sp.getPosition())) {
