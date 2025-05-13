@@ -8,14 +8,14 @@ import game.object.interfaces.Interactable;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
-public class Coin extends Item implements Interactable{
+public class Coin extends Item implements Interactable {
 	private boolean isVisible = false;
 	private Image Image1 = new Image(ClassLoader.getSystemResource("Image/coin1.png").toString());
 	private Image Image2 = new Image(ClassLoader.getSystemResource("Image/coin2.png").toString());
 	private int coinCount = 0;
 	private int col;
 	private int row;
-	
+
 	public boolean isVisible() {
 		return isVisible;
 	}
@@ -24,7 +24,7 @@ public class Coin extends Item implements Interactable{
 		this.isVisible = isVisible;
 	}
 
-	public Coin(Position pos) { 
+	public Coin(Position pos) {
 		super();
 		setPosition(pos);
 		this.row = pos.row;
@@ -33,15 +33,14 @@ public class Coin extends Item implements Interactable{
 
 	@Override
 	public void draw(GraphicsContext gc) {
-		float offset = (35-20)/2;
-		// TODO Auto-generated method stub
+		float offset = (35 - 20) / 2;
 		if (!isVisible) {
 			// do nothing
 		} else {
 			if (0 <= coinCount && coinCount <= 14) {
-				gc.drawImage(Image1, col * 20-offset, row * 20-offset, 35, 35);
+				gc.drawImage(Image1, col * 20 - offset, row * 20 - offset, 35, 35);
 			} else if (14 < coinCount && coinCount <= 29) {
-				gc.drawImage(Image2, col * 20-offset, row * 20-offset, 35, 35);
+				gc.drawImage(Image2, col * 20 - offset, row * 20 - offset, 35, 35);
 			} else if (coinCount > 29)
 				coinCount = 0;
 			coinCount++;
@@ -58,7 +57,7 @@ public class Coin extends Item implements Interactable{
 	public void pick(Player p) {
 		if (!isVisible) {
 			// do nothing
-		} else {			
+		} else {
 			this.setPosition(null);
 			this.isVisible = false;
 			this.useEffect(p);

@@ -19,43 +19,43 @@ public class MainMenuScene extends StackPane implements ChangeableScene {
 	private Canvas background;
 	private Thread backgroundThread;
 	private boolean running = true;
-	
+
 	private MainMenuScene() {
 		super();
 		this.setPrefWidth(1000);
 		this.setPrefHeight(600);
-		
-		background = new Canvas(1000,600);
+
+		background = new Canvas(1000, 600);
 		Image backgroundImage = new Image(ClassLoader.getSystemResource("Image/MainMenuBackground1.png").toString());
-		Image secondBackgroundImage = new Image(ClassLoader.getSystemResource("Image/MainMenuBackground2.png").toString());
-		background.getGraphicsContext2D().drawImage(backgroundImage,0,0,1000,600);
-		
+		Image secondBackgroundImage = new Image(
+				ClassLoader.getSystemResource("Image/MainMenuBackground2.png").toString());
+		background.getGraphicsContext2D().drawImage(backgroundImage, 0, 0, 1000, 600);
+
 		buttonPane = ButtonPane.getInstance();
-	
-		this.getChildren().addAll(background,buttonPane);
-		
-		backgroundThread = new Thread(() ->{
+
+		this.getChildren().addAll(background, buttonPane);
+
+		backgroundThread = new Thread(() -> {
 			while (running) {
 				try {
 					Thread.sleep(800);
-					Platform.runLater(() ->{
+					Platform.runLater(() -> {
 						background.getGraphicsContext2D().clearRect(0, 0, 1000, 600);
-						background.getGraphicsContext2D().drawImage(secondBackgroundImage, 0,0,1000,600);
+						background.getGraphicsContext2D().drawImage(secondBackgroundImage, 0, 0, 1000, 600);
 					});
 					Thread.sleep(800);
-					Platform.runLater(() ->{
+					Platform.runLater(() -> {
 						background.getGraphicsContext2D().clearRect(0, 0, 1000, 600);
-						background.getGraphicsContext2D().drawImage(backgroundImage, 0,0,1000,600);
+						background.getGraphicsContext2D().drawImage(backgroundImage, 0, 0, 1000, 600);
 					});
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				
+
 			}
 		});
 		backgroundThread.start();
 	}
-	
 
 	@Override
 	public void start(SceneManager sceneManager) {
@@ -78,5 +78,5 @@ public class MainMenuScene extends StackPane implements ChangeableScene {
 		}
 		return instance;
 	}
-	
+
 }

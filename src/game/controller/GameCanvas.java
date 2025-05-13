@@ -8,21 +8,21 @@ import javafx.scene.paint.Color;
 import sharedObject.IRenderable;
 import sharedObject.RenderableHolder;
 
-public class GameCanvas extends Canvas{
+public class GameCanvas extends Canvas {
 	GraphicsContext gc = this.getGraphicsContext2D();
-	
+
 	public GameCanvas(int width, int height) {
 		super(width, height);
 		this.setVisible(true);
-		//addListerner();
 	}
-	 
+
 	public void paintComponent() {
-		gc.clearRect(0,0,1000,600);
+		gc.clearRect(0, 0, 1000, 600);
 		gc.setFill(Color.BLACK);
-		for (IRenderable entity : RenderableHolder.getInstance().getEntities()) entity.draw(gc);
+		for (IRenderable entity : RenderableHolder.getInstance().getEntities())
+			entity.draw(gc);
 	}
-	
+
 	public void addListerner() {
 		this.setOnKeyPressed((KeyEvent event) -> {
 			InputUtility.setKeyPressed(event.getCode(), true);
@@ -32,5 +32,5 @@ public class GameCanvas extends Canvas{
 			InputUtility.setKeyPressed(event.getCode(), false);
 		});
 	}
-	
+
 }

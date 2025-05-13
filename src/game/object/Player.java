@@ -16,12 +16,11 @@ public class Player extends GameObject {
 	private int frameCount = 0;
 	private int wormCount = 0; //
 	private PlayerState playerState = PlayerState.In;
-	private String direction; // TODO : could be Enum
+	private String direction;
 	private Position prevOutPosition;
-	private List<GridBox> currentTrail; 
+	private List<GridBox> currentTrail;
 	private ArrayList<KeyCode> movingKey;
 	public int score = 0;
-
 
 	public Player(KeyCode[] movingKey) {
 		this.setSpeed(10);
@@ -37,20 +36,20 @@ public class Player extends GameObject {
 		if (this.frameCount == (20 - this.speed)) {
 			this.frameCount = 0;
 			switch (this.direction) {
-				case "UP":
-					this.position.updateRow(-1);
-					break;
-				case "LEFT":
-					this.position.updateCol(-1);
-					break;
-				case "DOWN":
-					this.position.updateRow(+1);
-					break;
-				case "RIGHT":
-					this.position.updateCol(+1);
-					break;
-				default:
-					break;
+			case "UP":
+				this.position.updateRow(-1);
+				break;
+			case "LEFT":
+				this.position.updateCol(-1);
+				break;
+			case "DOWN":
+				this.position.updateRow(+1);
+				break;
+			case "RIGHT":
+				this.position.updateCol(+1);
+				break;
+			default:
+				break;
 			}
 		}
 	}
@@ -59,29 +58,29 @@ public class Player extends GameObject {
 		for (KeyCode kc : InputUtility.getKeyPressed()) {
 			if (this.movingKey.contains(kc)) {
 				switch (this.movingKey.indexOf(kc)) {
-					case 0:
-						if (this.position.row == 0 || this.direction == "DOWN")
-							break;
-						direction = "UP";
+				case 0:
+					if (this.position.row == 0 || this.direction.equals("DOWN"))
 						break;
-					case 1:
-						if (this.position.col == 0 || this.direction == "RIGHT")
-							break;
-						direction = "LEFT";
+					direction = "UP";
+					break;
+				case 1:
+					if (this.position.col == 0 || this.direction.equals("RIGHT"))
 						break;
-					case 2:
-						if (this.position.row == Position.maxHeight - 1 || this.direction == "UP")
-							break;
-						direction = "DOWN";
+					direction = "LEFT";
+					break;
+				case 2:
+					if (this.position.row == Position.maxHeight - 1 || this.direction.equals("UP"))
 						break;
-					case 3:
-						if (this.position.col == Position.maxWidth - 1 || this.direction == "LEFT")
-							break;
-						direction = "RIGHT";
+					direction = "DOWN";
+					break;
+				case 3:
+					if (this.position.col == Position.maxWidth - 1 || this.direction.equals("LEFT"))
 						break;
+					direction = "RIGHT";
+					break;
 
-					default:
-						break;
+				default:
+					break;
 				}
 			}
 		}
@@ -135,10 +134,10 @@ public class Player extends GameObject {
 				this.currentTrail.add(gb);
 		}
 	}
-	
+
 	private Image[] vertWorm = new Image[4];
 	private Image[] horiWorm = new Image[4];
-	
+
 	@Override
 	public void setColor(Paint color) {
 		super.setColor(color);
@@ -162,21 +161,26 @@ public class Player extends GameObject {
 		this.vertWorm[3] = this.vertWorm[1];
 		this.horiWorm[3] = this.horiWorm[1];
 	}
-	
+
 	@Override
 	public void draw(GraphicsContext gc) {
-		if (wormCount == 16) wormCount = 0;
-		int idx = wormCount / 4; 
-		boolean flip = (this.direction == "DOWN" || this.direction == "LEFT");
-		int offset = (40-20)/2;
-		if (this.direction == "UP" || this.direction == "DOWN") {
+		if (wormCount == 16)
+			wormCount = 0;
+		int idx = wormCount / 4;
+		boolean flip = (this.direction.equals("DOWN") || this.direction.equals("LEFT"));
+		int offset = (40 - 20) / 2;
+		if (this.direction.equals("UP") || this.direction.equals("DOWN")) {
 			int row = this.position.row, col = this.position.col;
-			if (!flip) gc.drawImage(vertWorm[idx], (col * 20)-offset, (row *20)-offset, 40, 40);
-			else gc.drawImage(vertWorm[idx], (col * 20)-offset, (row * 20) + 40-offset, 40, -40);
+			if (!flip)
+				gc.drawImage(vertWorm[idx], (col * 20) - offset, (row * 20) - offset, 40, 40);
+			else
+				gc.drawImage(vertWorm[idx], (col * 20) - offset, (row * 20) + 40 - offset, 40, -40);
 		} else {
 			int row = this.position.row, col = this.position.col;
-			if (!flip) gc.drawImage(horiWorm[idx], col * 20-offset, row * 20-offset, 40, 40);
-			else gc.drawImage(horiWorm[idx], col * 20+40-offset, row *20-offset, -40, 40);
+			if (!flip)
+				gc.drawImage(horiWorm[idx], col * 20 - offset, row * 20 - offset, 40, 40);
+			else
+				gc.drawImage(horiWorm[idx], col * 20 + 40 - offset, row * 20 - offset, -40, 40);
 		}
 		wormCount++;
 	}
