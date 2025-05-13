@@ -13,8 +13,8 @@ public class GridBox extends GameObject {
 		this.setPosition(new Position(row, col));
 	}
 
-	public int paintTrail(Color trailColor) { // XXX: debug is needed!!!
-		if (this.state != gridState.SafeZone) { 
+	public int paintTrail(Color trailColor) {
+		if (this.state != gridState.SafeZone) {
 			if (this.color == trailColor) {
 				return 1; // kill itself
 			} else if (this.color != trailColor && this.color != blankColor) {

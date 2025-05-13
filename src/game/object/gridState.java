@@ -1,7 +1,7 @@
 package game.object;
 
 public enum gridState {
-	Blank,
-	SafeZone,
+	Blank, 
+	SafeZone, 
 	Trail;
 }

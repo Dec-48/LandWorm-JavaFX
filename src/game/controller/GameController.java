@@ -10,6 +10,7 @@ import java.util.Queue;
 import java.util.TreeSet;
 import java.util.concurrent.ThreadLocalRandom;
 
+import Manager.AudioManager;
 import game.object.GridBox;
 import game.object.Player;
 import game.object.PlayerState;
@@ -29,11 +30,10 @@ public class GameController {
 	private KeyCode[] movingKeyA = { KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D };
 	private KeyCode[] movingKeyB = { KeyCode.UP, KeyCode.LEFT, KeyCode.DOWN, KeyCode.RIGHT };
 	private Player playerA = new Player(movingKeyA);
-	private Player playerB = new Player(movingKeyB); 
+	private Player playerB = new Player(movingKeyB);
 	private ArrayList<SpeedPotion> speedPotions = new ArrayList<SpeedPotion>();
 	private ArrayList<Coin> coins = new ArrayList<Coin>();
 	private GridBox[][] grid = new GridBox[30][50];
-	private int frameCount = 0;
 	private int maxPotion = 4;
 	private Color a_color = Color.DARKRED;
 	private Color a_TrailColor = Color.RED;
@@ -41,7 +41,7 @@ public class GameController {
 	private Color b_TrailColor = Color.BLUE;
 	private GameplayBackground background;
 
-	public void initialGame() { // TODO : this need to rename to initialGame ???
+	public void initialGame() {
 		playerA.setColor(a_color);
 		playerB.setColor(b_color);
 		for (int i = 0; i < 30; i++) {
@@ -78,15 +78,19 @@ public class GameController {
 		RenderableHolder.getInstance().add(playerB);
 		ArrayList<Position> randPotionPos = new ArrayList<Position>();
 		ArrayList<Position> randCoinPos = new ArrayList<Position>();
-		for (int i = 0; i < maxPotion; ) {
-			Position posRand = new Position(ThreadLocalRandom.current().nextInt(1, 29), ThreadLocalRandom.current().nextInt(1, 49));
-			if (randPotionPos.contains(posRand)) continue;
+		for (int i = 0; i < maxPotion;) {
+			Position posRand = new Position(ThreadLocalRandom.current().nextInt(1, 29),
+					ThreadLocalRandom.current().nextInt(1, 49));
+			if (randPotionPos.contains(posRand))
+				continue;
 			randPotionPos.add(posRand);
 			i++;
 		}
-		for (int i = 0; i < 5; ) {
-			Position posRand = new Position(ThreadLocalRandom.current().nextInt(1, 29), ThreadLocalRandom.current().nextInt(1, 49));
-			if (randPotionPos.contains(posRand) || randCoinPos.contains(posRand)) continue;
+		for (int i = 0; i < 5;) {
+			Position posRand = new Position(ThreadLocalRandom.current().nextInt(1, 29),
+					ThreadLocalRandom.current().nextInt(1, 49));
+			if (randPotionPos.contains(posRand) || randCoinPos.contains(posRand))
+				continue;
 			randCoinPos.add(posRand);
 			i++;
 		}
@@ -104,15 +108,15 @@ public class GameController {
 			coins.add(c);
 			RenderableHolder.getInstance().add(c);
 		}
-		///////////////////////
 	}
 
 	public void update(int currentTime) {
 		if ((currentTime + 1) % 10 == 0) {
 			int idx = currentTime / 10;
-			if (idx < speedPotions.size()) {			
+			if (idx < speedPotions.size()) {
 				SpeedPotion sp = speedPotions.get(idx);
-				if (sp.getPosition() != null) sp.setVisible(true);
+				if (sp.getPosition() != null)
+					sp.setVisible(true);
 			}
 		}
 		playerA.move(); // move playerA along the direction from inputUtility
@@ -125,7 +129,7 @@ public class GameController {
 		playerB.addCurrentTrail(grid[Brow][Bcol]);
 		for (SpeedPotion sp : speedPotions) {
 			if (!sp.isVisible() || sp.getPosition() == null) {
-				//do nothing
+				// do nothing
 			} else {
 				if (playerA.getPosition().equals(sp.getPosition())) {
 					sp.pick(playerA);
@@ -134,7 +138,7 @@ public class GameController {
 		}
 		for (Coin c : coins) {
 			if (!c.isVisible() || c.getPosition() == null) {
-				//do nothing
+				// do nothing
 			} else {
 				if (playerA.getPosition().equals(c.getPosition())) {
 					c.pick(playerA);
@@ -143,7 +147,7 @@ public class GameController {
 		}
 		for (SpeedPotion sp : speedPotions) {
 			if (!sp.isVisible() || sp.getPosition() == null) {
-				//do nothing
+				// do nothing
 			} else {
 				if (playerB.getPosition().equals(sp.getPosition())) {
 					sp.pick(playerB);
@@ -152,15 +156,15 @@ public class GameController {
 		}
 		for (Coin c : coins) {
 			if (!c.isVisible() || c.getPosition() == null) {
-				//do nothing
+				// do nothing
 			} else {
 				if (playerB.getPosition().equals(c.getPosition())) {
 					c.pick(playerB);
 				}
 			}
 		}
-		// TODO: modify this method in order to handle double line trail!!!
-		int paintStateA = grid[Arow][Acol].paintTrail(a_TrailColor); // XXX here!!!
+		// This method handles double line trail.
+		int paintStateA = grid[Arow][Acol].paintTrail(a_TrailColor);
 		if (paintStateA == 0) {
 			if (playerA.getPlayerState() == PlayerState.In) { // get out of SafeZone
 				playerA.setPlayerState(PlayerState.Out);
@@ -179,7 +183,8 @@ public class GameController {
 				playerA.getCurrentTrail().clear();
 			}
 		} else if (paintStateA == 1) {
-			if (playerA.getCurrentTrail().getLast() != grid[Arow][Acol]) { // kill itself ??
+			if (playerA.getCurrentTrail().getLast() != grid[Arow][Acol]) { // kill itself
+				AudioManager.playEffect("Audio/Killeffect.wav");
 				for (GridBox gb : playerA.getCurrentTrail()) {
 					if (gb.getState() == gridState.Trail) {
 						gb.setColor(GridBox.blankColor);
@@ -190,14 +195,14 @@ public class GameController {
 				int col = playerA.getprevOutPosition().col;
 				playerA.setPosition(new Position(row, col));
 				grid[row][col].setState(gridState.SafeZone);
-				// playerA.setPosition(playerA.getprevOutPosition()); //XXX: fuck undefied
-				// behavior!!!!
 				playerA.getCurrentTrail().clear();
 			}
 		} else { // kill other
+			AudioManager.playEffect("Audio/Killeffect.wav");
 			int row = playerB.getprevOutPosition().row;
 			int col = playerB.getprevOutPosition().col;
 			playerB.setPosition(new Position(row, col));
+			AudioManager.playEffect("Audio/Killeffect.wav");
 			for (GridBox gb : playerB.getCurrentTrail()) {
 				if (gb.getState() == gridState.Trail) {
 					gb.setColor(GridBox.blankColor);
@@ -207,7 +212,7 @@ public class GameController {
 			grid[Arow][Acol].setState(gridState.Trail);
 			grid[Arow][Acol].setColor(a_TrailColor);
 			playerA.addCurrentTrail(grid[Arow][Acol]);
-			
+
 			grid[Brow][Bcol].setState(gridState.Blank);
 			grid[Brow][Bcol].setColor(GridBox.blankColor);
 			playerB.getCurrentTrail().clear();
@@ -233,6 +238,7 @@ public class GameController {
 			}
 		} else if (paintStateB == 1) {
 			if (playerB.getCurrentTrail().getLast() != grid[Brow][Bcol]) { // kill itself
+				AudioManager.playEffect("Audio/Killeffect.wav");
 				for (GridBox gb : playerB.getCurrentTrail()) {
 					if (gb.getState() == gridState.Trail) {
 						gb.setColor(GridBox.blankColor);
@@ -249,6 +255,7 @@ public class GameController {
 			int row = playerA.getprevOutPosition().row;
 			int col = playerA.getprevOutPosition().col;
 			playerA.setPosition(new Position(row, col));
+			AudioManager.playEffect("Audio/Killeffect.wav");
 			for (GridBox gb : playerA.getCurrentTrail()) {
 				if (gb.getState() == gridState.Trail) {
 					gb.setColor(GridBox.blankColor);
@@ -264,8 +271,8 @@ public class GameController {
 		}
 	}
 
-	private ArrayList<Position> fillSpace(List<GridBox> currentTrail, Paint trailColor) { // XXX: still have bug when too
-																																												// zig zag path
+	private ArrayList<Position> fillSpace(List<GridBox> currentTrail, Paint trailColor) {
+		// zig zag path
 		ArrayList<Position> ret = new ArrayList<Position>();
 		Boolean vis[][] = new Boolean[30][50];
 		for (int i = 0; i < 30; i++) {
@@ -310,7 +317,8 @@ public class GameController {
 					int sJ = tmp.get(idx);
 					int eJ = tmp.get(idx + 1);
 					for (int j = sJ; j <= eJ; j++) {
-						if (grid[i][j].getColor() == trailColor && grid[i][j].getState() == gridState.SafeZone) continue;
+						if (grid[i][j].getColor() == trailColor && grid[i][j].getState() == gridState.SafeZone)
+							continue;
 						if (!vis[i][j]) {
 							vis[i][j] = true;
 							ret.add(new Position(i, j));
@@ -336,7 +344,8 @@ public class GameController {
 					int sI = tmp.get(idx);
 					int eI = tmp.get(idx + 1);
 					for (int i = sI; i <= eI; i++) {
-						if (grid[i][j].getColor() == trailColor && grid[i][j].getState() == gridState.SafeZone) continue;
+						if (grid[i][j].getColor() == trailColor && grid[i][j].getState() == gridState.SafeZone)
+							continue;
 						if (!vis[i][j]) {
 							vis[i][j] = true;
 							ret.add(new Position(i, j));
@@ -364,7 +373,7 @@ public class GameController {
 				if (0 <= nowRow && nowRow < 30) {
 					if (grid[nowRow][curCol].getColor() == trailColor) {
 						dirFlag[1 + d][0] += 1;
-						dirFlag[1 + d][1] += 1; 
+						dirFlag[1 + d][1] += 1;
 						dirFlag[1 + d][2] += 1;
 					}
 				}
@@ -456,7 +465,6 @@ public class GameController {
 		return b_TrailColor;
 	}
 
-	// Flim Fall added this for getting color name in filepath easier
 	public String getA_stringColor() {
 		if ((a_color == Color.RED) || (a_color == Color.DARKRED)) {
 			return "Red";
@@ -505,7 +513,8 @@ public class GameController {
 		}
 		return instance;
 	}
-	
+
+	// return the winner to be shown in resultPane.
 	public Player getWinnerPlayer() {
 		for (int i = 0; i < 30; i++) {
 			for (int j = 0; j < 50; j++) {

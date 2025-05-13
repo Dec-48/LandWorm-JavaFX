@@ -13,22 +13,22 @@ import javafx.scene.media.AudioClip;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-	
+
 	@Override
 	public void start(Stage primaryStage) {
 
 		primaryStage.setTitle("LandWorm");
 		primaryStage.getIcons().add(new Image(ClassLoader.getSystemResource("Image/GameIcon.PNG").toString()));
 		primaryStage.setResizable(false);
-        primaryStage.setOnCloseRequest(event -> {
-            AudioManager.stopBGM(); 
-            Platform.exit();       
-            System.exit(0);         
-        });
+		primaryStage.setOnCloseRequest(event -> {
+			AudioManager.stopBGM();
+			Platform.exit();
+			System.exit(0);
+		});
 
-        SceneManager.getInstance(primaryStage).setScene(MainMenuScene.getInstance());
+		SceneManager.getInstance(primaryStage).setScene(MainMenuScene.getInstance());
 	}
-	
+
 	public static void main(String[] args) {
 		launch(args);
 	}
