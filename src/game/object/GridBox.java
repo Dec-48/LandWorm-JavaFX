@@ -2,18 +2,19 @@ package game.object;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 
 public class GridBox extends GameObject {
 	private Item item;
 	private gridState state = gridState.Blank;
-	public static Color blankColor = Color.BISQUE;
+	public static Paint blankColor = Color.BISQUE;
 
 	public GridBox(int row, int col) {
 		this.color = blankColor;
 		this.setPosition(new Position(row, col));
 	}
 
-	public int paintTrail(Color trailColor) {
+	public int paintTrail(Paint trailColor) {
 		if (this.state != gridState.SafeZone) {
 			if (this.color == trailColor) {
 				return 1; // kill itself
