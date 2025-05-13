@@ -45,14 +45,14 @@ public class SpeedPotion extends Item implements Interactable {
 	public void useEffect(Player p) {
 		AudioManager.playEffect("Audio/ItemSelectEffect.mp3");
 		new Thread(() -> { // XXX avoid this
-			Platform.runLater(() -> p.setSpeed(17));
+			Platform.runLater(() -> p.setSpeed(18));
 			try {
 				Thread.sleep(1250);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			Platform.runLater(() -> p.setSpeed(10));
+			Platform.runLater(() -> p.setSpeed(16));
 		}).start();
 	}
 
@@ -61,7 +61,7 @@ public class SpeedPotion extends Item implements Interactable {
 		if (!isVisible) {
 			// do nothing
 		} else {
-			if (p.getSpeed() > 10) {
+			if (p.getSpeed() > 16) {
 				// do nothing
 			} else {
 				this.setPosition(null);

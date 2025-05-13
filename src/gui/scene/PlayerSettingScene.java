@@ -179,7 +179,7 @@ public class PlayerSettingScene extends StackPane implements ChangeableScene {
 		redButtonA.getGraphicsContext2D().drawImage(redButtonImage, 0, 0, 60, 60);
 		redButtonA.setOnMouseClicked(e -> {
 			if ((GameController.getInstance().getB_color() != Color.RED)
-					&& (GameController.getInstance().getB_color() != Color.DARKRED)) {
+					&& (GameController.getInstance().getB_color() != Color.RED)) {
 				AudioManager.playEffect("Audio/ClickEffect.mp3");
 				GameController.getInstance().setPlayerAcolors(Color.RED, Color.RED);
 			}
@@ -204,7 +204,7 @@ public class PlayerSettingScene extends StackPane implements ChangeableScene {
 		blueButtonA.getGraphicsContext2D().drawImage(blueButtonImage, 0, 0, 60, 60);
 		blueButtonA.setOnMouseClicked(e -> {
 			if ((GameController.getInstance().getB_color() != Color.BLUE)
-					&& (GameController.getInstance().getB_color() != Color.DARKBLUE)) {
+					&& (GameController.getInstance().getB_color() != Color.BLUE)) {
 				AudioManager.playEffect("Audio/ClickEffect.mp3");
 				GameController.getInstance().setPlayerAcolors(Color.BLUE, Color.BLUE);
 			}
@@ -222,7 +222,7 @@ public class PlayerSettingScene extends StackPane implements ChangeableScene {
 		redButtonB.getGraphicsContext2D().drawImage(redButtonImage, 0, 0, 60, 60);
 		redButtonB.setOnMouseClicked(e -> {
 			if ((GameController.getInstance().getA_color() != Color.RED)
-					&& (GameController.getInstance().getA_color() != Color.DARKRED)) {
+					&& (GameController.getInstance().getA_color() != Color.RED)) {
 				AudioManager.playEffect("Audio/ClickEffect.mp3");
 				GameController.getInstance().setPlayerBcolors(Color.RED, Color.RED);
 			}
@@ -247,7 +247,7 @@ public class PlayerSettingScene extends StackPane implements ChangeableScene {
 		blueButtonB.getGraphicsContext2D().drawImage(blueButtonImage, 0, 0, 60, 60);
 		blueButtonB.setOnMouseClicked(e -> {
 			if ((GameController.getInstance().getA_color() != Color.BLUE)
-					&& (GameController.getInstance().getA_color() != Color.DARKBLUE)) {
+					&& (GameController.getInstance().getA_color() != Color.BLUE)) {
 				AudioManager.playEffect("Audio/ClickEffect.mp3");
 				GameController.getInstance().setPlayerBcolors(Color.BLUE, Color.BLUE);
 			}

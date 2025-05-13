@@ -36,11 +36,12 @@ public class GameController {
 	private ArrayList<Coin> coins = new ArrayList<Coin>();
 	private GridBox[][] grid = new GridBox[30][50];
 	private int maxPotion = 4;
-	private Color a_color = Color.DARKRED;
+	private Color a_color = Color.RED;
 	private Color a_TrailColor = Color.RED;
-	private Color b_color = Color.DARKBLUE;
+	private Color b_color = Color.BLUE;
 	private Color b_TrailColor = Color.BLUE;
 	private GameplayBackground background;
+	private boolean swapPlayer = false; //XXX
 
 	public void initialGame() {
 		playerA.setColor(a_color);
@@ -110,7 +111,7 @@ public class GameController {
 			RenderableHolder.getInstance().add(c);
 		}
 	}
-
+	
 	public void update(int currentTime) {
 		if ((currentTime + 1) % 10 == 0) {
 			int idx = currentTime / 10;
@@ -120,156 +121,82 @@ public class GameController {
 					sp.setVisible(true);
 			}
 		}
-		playerA.move(); // move playerA along the direction from inputUtility
-		playerB.move(); // move playerB along the direction from inputUtility
-		int Arow = playerA.getPosition().row;
-		int Acol = playerA.getPosition().col;
-		playerA.addCurrentTrail(grid[Arow][Acol]);
-		int Brow = playerB.getPosition().row;
-		int Bcol = playerB.getPosition().col;
-		playerB.addCurrentTrail(grid[Brow][Bcol]);
-		for (SpeedPotion sp : speedPotions) {
-			if (!sp.isVisible() || sp.getPosition() == null) {
-				// do nothing
-			} else {
-				if (playerA.getPosition().equals(sp.getPosition())) {
-					sp.pick(playerA);
-				}
-			}
-		}
-		for (Coin c : coins) {
-			if (!c.isVisible() || c.getPosition() == null) {
-				// do nothing
-			} else {
-				if (playerA.getPosition().equals(c.getPosition())) {
-					c.pick(playerA);
-				}
-			}
-		}
-		for (SpeedPotion sp : speedPotions) {
-			if (!sp.isVisible() || sp.getPosition() == null) {
-				// do nothing
-			} else {
-				if (playerB.getPosition().equals(sp.getPosition())) {
-					sp.pick(playerB);
-				}
-			}
-		}
-		for (Coin c : coins) {
-			if (!c.isVisible() || c.getPosition() == null) {
-				// do nothing
-			} else {
-				if (playerB.getPosition().equals(c.getPosition())) {
-					c.pick(playerB);
-				}
-			}
-		}
-		// This method handles double line trail.
-		int paintStateA = grid[Arow][Acol].paintTrail(a_TrailColor);
-		if (paintStateA == 0) {
-			if (playerA.getPlayerState() == PlayerState.In) { // get out of SafeZone
-				playerA.setPlayerState(PlayerState.Out);
-				playerA.setprevOutPosition(new Position(Arow, Acol));
-			}
-		} else if (paintStateA == 3) { // move in SafeZone
-			if (playerA.getPlayerState() == PlayerState.Out) { // closed loop
-				playerA.setPlayerState(PlayerState.In);
-				for (GridBox gb : playerA.getCurrentTrail())
-					gb.setState(gridState.SafeZone);
-				ArrayList<Position> spaces = this.fillSpace(a_TrailColor);
-				for (Position pos : spaces) {
-					grid[pos.row][pos.col].setColor(a_TrailColor);
-					grid[pos.row][pos.col].setState(gridState.SafeZone);
-				}
-				playerA.getCurrentTrail().clear();
-			}
-		} else if (paintStateA == 1) {
-			if (playerA.getCurrentTrail().getLast() != grid[Arow][Acol]) { // kill itself
-				AudioManager.playEffect("Audio/Killeffect.wav");
-				for (GridBox gb : playerA.getCurrentTrail()) {
-					if (gb.getState() == gridState.Trail) {
-						gb.setColor(GridBox.blankColor);
-						gb.setState(gridState.Blank);
-					}
-				}
-				int row = playerA.getprevOutPosition().row;
-				int col = playerA.getprevOutPosition().col;
-				playerA.setPosition(new Position(row, col));
-				grid[row][col].setState(gridState.SafeZone);
-				playerA.getCurrentTrail().clear();
-			}
-		} else { // kill other
-			AudioManager.playEffect("Audio/Killeffect.wav");
-			int row = playerB.getprevOutPosition().row;
-			int col = playerB.getprevOutPosition().col;
-			playerB.setPosition(new Position(row, col));
-			AudioManager.playEffect("Audio/Killeffect.wav");
-			for (GridBox gb : playerB.getCurrentTrail()) {
-				if (gb.getState() == gridState.Trail) {
-					gb.setColor(GridBox.blankColor);
-					gb.setState(gridState.Blank);
-				}
-			}
-			grid[Arow][Acol].setState(gridState.Trail);
-			grid[Arow][Acol].setColor(a_TrailColor);
-			playerA.addCurrentTrail(grid[Arow][Acol]);
-
-			grid[Brow][Bcol].setState(gridState.Blank);
-			grid[Brow][Bcol].setColor(GridBox.blankColor);
-			playerB.getCurrentTrail().clear();
-		}
-
-		int paintStateB = grid[Brow][Bcol].paintTrail(b_TrailColor);
-		if (paintStateB == 0) {
-			if (playerB.getPlayerState() == PlayerState.In) { // get out of SafeZone
-				playerB.setPlayerState(PlayerState.Out);
-				playerB.setprevOutPosition(new Position(Brow, Bcol));
-			}
-		} else if (paintStateB == 3) { // move in SafeZone
-			if (playerB.getPlayerState() == PlayerState.Out) { // closed loop
-				playerB.setPlayerState(PlayerState.In);
-				for (GridBox gb : playerB.getCurrentTrail())
-					gb.setState(gridState.SafeZone);
-				ArrayList<Position> spaces = this.fillSpace(b_TrailColor);
-				for (Position pos : spaces) {
-					grid[pos.row][pos.col].setState(gridState.SafeZone);
-					grid[pos.row][pos.col].setColor(b_TrailColor);
-				}
-				playerB.getCurrentTrail().clear();
-			}
-		} else if (paintStateB == 1) {
-			if (playerB.getCurrentTrail().getLast() != grid[Brow][Bcol]) { // kill itself
-				AudioManager.playEffect("Audio/Killeffect.wav");
-				for (GridBox gb : playerB.getCurrentTrail()) {
-					if (gb.getState() == gridState.Trail) {
-						gb.setColor(GridBox.blankColor);
-						gb.setState(gridState.Blank);
-					}
-				}
-				int row = playerB.getprevOutPosition().row;
-				int col = playerB.getprevOutPosition().col;
-				grid[row][col].setState(gridState.SafeZone);
-				playerB.setPosition(new Position(row, col));
-				playerB.getCurrentTrail().clear();
-			}
+		Player curPlayer;
+		Player othPlayer;
+		swapPlayer = !swapPlayer;
+		if (swapPlayer) {
+			curPlayer = playerA;
+			othPlayer = playerB;
 		} else {
-			int row = playerA.getprevOutPosition().row;
-			int col = playerA.getprevOutPosition().col;
-			playerA.setPosition(new Position(row, col));
-			AudioManager.playEffect("Audio/Killeffect.wav");
-			for (GridBox gb : playerA.getCurrentTrail()) {
-				if (gb.getState() == gridState.Trail) {
-					gb.setColor(GridBox.blankColor);
-					gb.setState(gridState.Blank);
-				}
-			}
-			grid[Brow][Bcol].setState(gridState.Trail);
-			grid[Brow][Bcol].setColor(b_TrailColor);
-			playerB.addCurrentTrail(grid[Brow][Bcol]);
-			grid[Arow][Acol].setColor(GridBox.blankColor);
-			grid[Arow][Acol].setState(gridState.Blank);
-			playerA.getCurrentTrail().clear();
+			curPlayer = playerB;
+			othPlayer = playerA;
 		}
+		int cRow = curPlayer.getPosition().row;
+		int cCol = curPlayer.getPosition().col;
+		curPlayer.addCurrentTrail(grid[cRow][cCol]);
+		
+		for (SpeedPotion sp : speedPotions) {
+			if (!sp.isVisible() || sp.getPosition() == null) continue;
+			if (curPlayer.getPosition().equals(sp.getPosition())) {
+				sp.pick(curPlayer);
+			}
+		}
+		for (Coin c : coins) {
+			if (!c.isVisible() || c.getPosition() == null) continue;
+			if (curPlayer.getPosition().equals(c.getPosition())) {
+				c.pick(curPlayer);
+			}
+		}
+		int paintState = grid[cRow][cCol].paintTrail(curPlayer.getColor());
+		if (paintState == 0) {
+			if (curPlayer.getPlayerState() == PlayerState.In) { // get out of SafeZone
+				curPlayer.setPlayerState(PlayerState.Out);
+				curPlayer.setprevOutPosition(new Position(cRow, cCol));
+			}
+		} else if (paintState == 3) { // move in SafeZone
+			if (curPlayer.getPlayerState() == PlayerState.Out) { // closed loop
+				curPlayer.setPlayerState(PlayerState.In);
+				
+				handleCloseLoop(curPlayer, curPlayer.getColor());
+			}
+		} else if (paintState == 1) {
+			if (curPlayer.getCurrentTrail().getLast() != grid[cRow][cCol]) { // kill itself (A dead)
+				killPlayer(curPlayer);
+			}
+		} else { // kill other (B dead)
+			AudioManager.playEffect("Audio/Killeffect.wav");
+			killPlayer(othPlayer);
+		}
+		curPlayer.move(); // move playerA along the direction from inputUtility
+	}
+	
+	private void handleCloseLoop(Player p, Paint trailColor) {
+		for (GridBox gb : p.getCurrentTrail())
+			gb.setState(gridState.SafeZone);
+		ArrayList<Position> spaces = this.fillSpace(trailColor);
+		for (Position pos : spaces) {
+			grid[pos.row][pos.col].setState(gridState.SafeZone);
+			grid[pos.row][pos.col].setColor(trailColor);
+		}
+		p.getCurrentTrail().clear();
+	}
+		
+	private void killPlayer(Player p) {
+		int Lrow = p.getPosition().row;
+		int Lcol = p.getPosition().col;
+		for (GridBox gb : p.getCurrentTrail()) {
+			if (gb.getState() == gridState.Trail) {
+				gb.setColor(GridBox.blankColor);
+				gb.setState(gridState.Blank);
+			}
+		}
+		grid[Lrow][Lcol].setColor(GridBox.blankColor);
+		grid[Lrow][Lcol].setState(gridState.Blank);
+		int row = p.getprevOutPosition().row;
+		int col = p.getprevOutPosition().col;
+		p.setPosition(new Position(row, col));
+		grid[row][col].setState(gridState.SafeZone);
+		p.getCurrentTrail().clear();
 	}
 	
 	private ArrayList<Position> fillSpace(Paint trailColor) {

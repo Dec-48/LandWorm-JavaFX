@@ -23,7 +23,7 @@ public class Player extends GameObject {
 	public int score = 0;
 
 	public Player(KeyCode[] movingKey) {
-		this.setSpeed(10);
+		this.setSpeed(16);
 		this.setPaintSize(1);
 		this.setDirection("N");
 		this.setCurrentTrail(new ArrayList<GridBox>());
